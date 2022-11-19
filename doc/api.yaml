@@ -175,9 +175,7 @@ paths:
           description: The resource has been fetched and transmitted in the message body.
           content:
             application/json:
-              schema:
-                type: array
-                items: { $ref: "#/components/schemas/userProfile" }
+              schema: { $ref: "#/components/schemas/userProfile" }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '404': { $ref: '#/components/responses/NotFound' }
   
