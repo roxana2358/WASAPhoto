@@ -15,25 +15,27 @@ components:
         photos:
           description: User's photos (in reverse chronological order).
           type: array
-          items: 
+          items:
             type: string
-            format: binary
+            format: base64
+          minItems: 0
+          maxItems: 10000
         numberOfPhotos:
           description: Number of photos posted
           type: integer
           example: 45
         followers:
-          description: List of followers' usernames.
+          description: List of followers.
           type: array
-          items:
-            type: string
-            example: "Bob30"
+          items: { $ref: "#/components/schemas/username" }
+          minItems: 0
+          maxItems: 10000
         following:
-          description: List of following users usernames.
+          description: List of following users.
           type: array
-          items:
-            type: string
-            example: "Bob36"
+          items: { $ref: "#/components/schemas/username" }
+          minItems: 0
+          maxItems: 10000
     userPost:
       title: User post
       description: This represents a sigle user post.
@@ -42,7 +44,7 @@ components:
         photo:
           description: The photo posted.
           type: string
-          format: binary
+          format: base64
         dateAndTime:
           description: Date and time on which the photo was posted.
           type: string
@@ -51,12 +53,22 @@ components:
         likes:
           description: Number of likes
           type: integer
-          example: 52
+          example: 56
         comments:
           description: Number of comments
           type: integer
-          example: 26
+          example: 28
+    username:
+      title: Username
+      description: Username that everyone can see
+      type: string
+      pattern: "^[a-zA-Z0-9]*$"
+      minLength: 3
+      maxLength: 16
+      example: Alice68
   responses:
+    NoContent: 
+      description: "Operation successful; no response body needed."
     UnauthorizedError:
       description: Access token is missing or invalid
     NotFound:
@@ -68,7 +80,10 @@ components:
       description: Unique user identifier
       schema:
         type: string
+        pattern: '^[A-Z]{2}[0-9]{3}[a-z]{1}[0-9]{4}$'
         readOnly: true
+        minLength: 10
+        maxLength: 10
       example: US123e4567
       required: true
     photoID:
@@ -77,8 +92,11 @@ components:
       description: Unique photo identifier
       schema:
         type: string
+        pattern: '^[A-Z]{2}[0-9]{4}[a-z]{1}[0-9]{3}$'
         readOnly: true
-      example: PH42661t417
+        minLength: 10
+        maxLength: 10
+      example: PH1234e567
       required: true
     commentID:
       name: commentID
@@ -86,10 +104,12 @@ components:
       description: Unique comment identifier
       schema:
         type: string
+        pattern: '^[A-Z]{2}[0-9]{5}[a-z]{1}[0-9]{2}$'
         readOnly: true
-      example: CM268v2809
+        minLength: 10
+        maxLength: 10
+      example: CM12345e67
       required: true
-  #requestBodies:
   securitySchemes:
     bearerAuth:
       type: http
@@ -149,16 +169,14 @@ paths:
           in: query
           description: This is the username of the user whose profile we want to see.
           required: true
-          schema:
-            type: string
-            example: "Alice154"
+          schema: { $ref: "#/components/schemas/username" }
       responses:
         '200': 
           description: The resource has been fetched and transmitted in the message body.
           content:
             application/json:
               schema:
-                type: object
+                type: array
                 items: { $ref: "#/components/schemas/userProfile" }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '404': { $ref: '#/components/responses/NotFound' }
@@ -172,17 +190,14 @@ paths:
       description: |-
         If the username is available it uploads the old one; otherwise it notifies the user that the username is already used.
       operationId: setMyUserName
-      parameters:
-        - name: newUsername
-          in: query
-          description: New username to replace the old one.
-          required: true
-          schema:
-            type: string
-            example: "Alice182"
+      requestBody:
+        description: New username to replace the old one.
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/username" }
+        required: true
       responses:
-        '200':
-          description: The username has been updated successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '400':
           description: The username has already been taken by another user.
         '401': { $ref: '#/components/responses/UnauthorizedError' }
@@ -200,6 +215,8 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/userPost"}
+                minItems: 1
+                maxItems: 50
         '401': { $ref: '#/components/responses/UnauthorizedError' }
       
   /users/{userID}/followers:
@@ -210,17 +227,14 @@ paths:
       summary: Follow user
       description: Adds user to following list
       operationId: followUser
-      parameters:
-        - name: user
-          in: query
-          description: Username of user to be followed
-          required: true
-          schema:
-            type: string
-            example: Bob220
+      requestBody:
+        description: Username of user to be followed
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/username" }
+        required: true
       responses:
-        '201':
-          description: User followed successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
     delete:
       tags: ["followers"]
@@ -232,12 +246,9 @@ paths:
           in: query
           description: Username of user to be unfollowed
           required: true
-          schema:
-            type: string
-            example: Bob237
+          schema: { $ref: "#/components/schemas/username" }
       responses:
-        '201':
-          description: User unfollowed successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }   
     
   /users/{userID}/ban:
@@ -248,17 +259,14 @@ paths:
       summary: Ban user
       description: Adds user to banned list
       operationId: banUser
-      parameters:
-        - name: user
-          in: query
-          description: Username of user to be banned
-          required: true
-          schema:
-            type: string
-            example: Bob258
+      requestBody:
+        description: Username of user to be banned
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/username" }
+        required: true
       responses:
-        '201':
-          description: User banned successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
     delete:
       tags: ["ban"]
@@ -270,12 +278,9 @@ paths:
           in: query
           description: Username of user to be unbanned
           required: true
-          schema:
-            type: string
-            example: Bob275
+          schema: { $ref: "#/components/schemas/username" }
       responses:
-        '201':
-          description: User unbanned successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
   
   /users/{userID}/photos/:
@@ -292,7 +297,7 @@ paths:
           image/png:
             schema:
               type: string
-              format: binary
+              format: base64
       responses:
         '201':
           description: Photo uploaded successfully.
@@ -311,8 +316,7 @@ paths:
       description: Deletes the photo from user's profile.
       operationId: deletePhoto
       responses:
-        '200':
-          description: Photo deleted successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
     
   /photos/{photoID}/comments:
@@ -330,17 +334,15 @@ paths:
             schema:
               type: object
               properties:
-                user:
-                  description: User that commented the photo
-                  type: string
-                  example: "Bob337"
+                username: { $ref: '#/components/schemas/username' }
                 comment:
                   description: Comment to be uploaded
                   type: string
+                  minLength: 1
+                  maxLength: 300
                   example: "Nice pic!"
       responses:
-        '201':
-          description: Comment uploaded successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
     
   /photos/{photoID}/comments/{commentID}:
@@ -353,8 +355,7 @@ paths:
       description: Removes a comment from photo.
       operationId: uncommentPhoto
       responses:
-        '200':
-          description: Comment deleted successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         
   /photos/{photoID}/likes:
@@ -365,17 +366,14 @@ paths:
       summary: Add like to a photo
       description: Adds a like to the photo
       operationId: likePhoto
-      parameters:
-        - name: user
-          in: query
-          description: Username of user that liked the photo
-          required: true
-          schema:
-            type: string
-            example: Bob375
+      requestBody:
+        description: Username of user that liked the photo
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/username" }
+        required: true
       responses:
-        '201':
-          description: Photo liked successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
     delete:
       tags: ["update photo"]
@@ -387,11 +385,8 @@ paths:
           in: query
           description: Username of user that liked the photo
           required: true
-          schema:
-            type: string
-            example: Bob392
+          schema: { $ref: "#/components/schemas/username" }
       responses:
-        '201':
-          description: Photo unliked successfully.
+        '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }   
   
