@@ -80,7 +80,6 @@ components:
       description: Unique user identifier
       schema:
         type: string
-        pattern: '^[A-Z]{2}[0-9]{3}[a-z]{1}[0-9]{4}$'
         readOnly: true
         minLength: 10
         maxLength: 10
@@ -92,7 +91,6 @@ components:
       description: Unique photo identifier
       schema:
         type: string
-        pattern: '^[A-Z]{2}[0-9]{4}[a-z]{1}[0-9]{3}$'
         readOnly: true
         minLength: 10
         maxLength: 10
@@ -104,7 +102,6 @@ components:
       description: Unique comment identifier
       schema:
         type: string
-        pattern: '^[A-Z]{2}[0-9]{5}[a-z]{1}[0-9]{2}$'
         readOnly: true
         minLength: 10
         maxLength: 10
