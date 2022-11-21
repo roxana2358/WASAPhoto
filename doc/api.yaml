@@ -66,6 +66,13 @@ components:
       minLength: 3
       maxLength: 16
       example: Alice68
+    photoID:
+      title: PhotoID
+      description: Unique photo identifier
+      type: string
+      minLength: 10
+      maxLength: 10
+      readOnly: true
   responses:
     NoContent: 
       description: "Operation successful; no response body needed."
@@ -80,20 +87,16 @@ components:
       description: Unique user identifier
       schema:
         type: string
-        readOnly: true
         minLength: 10
         maxLength: 10
+        readOnly: true
       example: US123e4567
       required: true
     photoID:
       name: photoID
       in: path
       description: Unique photo identifier
-      schema:
-        type: string
-        readOnly: true
-        minLength: 10
-        maxLength: 10
+      schema: { $ref: "#/components/schemas/photoID"}
       example: PH1234e567
       required: true
     commentID:
@@ -102,9 +105,9 @@ components:
       description: Unique comment identifier
       schema:
         type: string
-        readOnly: true
         minLength: 10
         maxLength: 10
+        readOnly: true
       example: CM12345e67
       required: true
   securitySchemes:
@@ -149,6 +152,8 @@ paths:
                 properties:
                   identifier:
                     type: string
+                    minLength: 12
+                    maxLength: 12
                     example: "abcdef012345"
         '401': { $ref: '#/components/responses/UnauthorizedError' }
   
@@ -298,7 +303,7 @@ paths:
           description: Photo uploaded successfully.
           content:
             application/json:
-              schema: { $ref : "#/components/parameters/photoID"}
+              schema: { $ref : "#/components/schemas/photoID"}
         '401': { $ref: '#/components/responses/UnauthorizedError' }
     
   /users/{userID}/photos/{photoID}:
