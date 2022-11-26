@@ -17,7 +17,9 @@ components:
           type: array
           items:
             type: string
-            format: base64
+            format: binary
+            minLength: 1
+            maxLength: 300
           minItems: 0
           maxItems: 10000
         numberOfPhotos:
@@ -44,11 +46,15 @@ components:
         photo:
           description: The photo posted.
           type: string
-          format: base64
+          format: binary
+          minLength: 1
+          maxLength: 300
         dateAndTime:
           description: Date and time on which the photo was posted.
           type: string
           format: date-time
+          minLength: 20
+          maxLength: 20
           example: "2021-01-30T08:30:00Z"
         likes:
           description: Number of likes
@@ -70,12 +76,15 @@ components:
       title: Generic ID
       description: Unique identifier
       type: string
+      pattern: "^[A-Z0-9]*$"
       minLength: 10
       maxLength: 10
       readOnly: true
   responses:
     NoContent: 
       description: "Operation successful; no response body needed."
+    BadRequest:
+      description: The username cannot be used.
     UnauthorizedError:
       description: Access token is missing or invalid
     NotFound:
@@ -125,6 +134,7 @@ components:
       required: true
   securitySchemes:
     bearerAuth:
+      description: Bearer authentication scheme
       type: http
       scheme: bearer
 
@@ -163,9 +173,10 @@ paths:
               type: object
               properties:
                 name:
+                  description: Username
                   type: string
                   example: Maria
-                  pattern: 'ˆ.*?$'
+                  pattern: '^.*?$'
                   minLength: 3
                   maxLength: 16
         required: true
@@ -178,7 +189,9 @@ paths:
                 type: object
                 properties:
                   identifier:
+                    description: User identifier
                     type: string
+                    pattern: "^[a-zA-Z0-9]*$"
                     minLength: 12
                     maxLength: 12
                     example: "abcdef012345"
@@ -225,8 +238,7 @@ paths:
         required: true
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
-        '400':
-          description: The username has already been taken by another user.
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
     get:
       tags: ["Stream"]
@@ -245,21 +257,16 @@ paths:
                 minItems: 1
                 maxItems: 50
         '401': { $ref: '#/components/responses/UnauthorizedError' }
-      
-  /users/{userID}/following:
+    
+  /users/{userID}/following/{followedID}:
     parameters:
-      - $ref: "#/components/parameters/userID"
-    post:
+      - $ref: "#/components/parameters/userID" 
+      - $ref: "#/components/parameters/followedID"
+    put:
       tags: ["Following"]
       summary: Follows user
       description: Adds user to following list
       operationId: followUser
-      requestBody:
-        description: Username of user to be followed
-        content:
-          application/json:
-            schema: { $ref: "#/components/schemas/username" }
-        required: true
       responses:
         '201':
           description: User followed successfully.
@@ -267,11 +274,7 @@ paths:
             application/json:
               schema: { $ref : "#/components/schemas/ID"}
         '401': { $ref: '#/components/responses/UnauthorizedError' }
-    
-  /users/{userID}/following/{followedID}:
-    parameters:
-      - $ref: "#/components/parameters/userID" 
-      - $ref: "#/components/parameters/followedID" 
+        '404': { $ref: '#/components/responses/NotFound' } 
     delete:
       tags: ["Following"]
       summary: Unfollows user
@@ -279,22 +282,17 @@ paths:
       operationId: unfollowUser
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }   
-    
-  /users/{userID}/ban:
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+  
+  /users/{userID}/ban/{bannedID}:
     parameters:
       - $ref: "#/components/parameters/userID"
-    post:
+      - $ref: "#/components/parameters/bannedID"
+    put:
       tags: ["Ban"]
       summary: Bans user
       description: Adds user to banned list
       operationId: banUser
-      requestBody:
-        description: Username of user to be banned
-        content:
-          application/json:
-            schema: { $ref: "#/components/schemas/username" }
-        required: true
       responses:
         '201':
           description: User banned successfully.
@@ -302,11 +300,7 @@ paths:
             application/json:
               schema: { $ref : "#/components/schemas/ID"}
         '401': { $ref: '#/components/responses/UnauthorizedError' }
-  
-  /users/{userID}/ban/{bannedID}:
-    parameters:
-      - $ref: "#/components/parameters/userID"
-      - $ref: "#/components/parameters/bannedID"
+        '404': { $ref: '#/components/responses/NotFound' }
     delete:
       tags: ["Ban"]
       summary: Unbans user
@@ -330,7 +324,7 @@ paths:
           image/png: 
             schema:
               type: string
-              format: base64
+              format: binary
       responses:
         '201':
           description: Photo uploaded successfully.
@@ -371,6 +365,7 @@ paths:
                 comment:
                   description: Comment to be uploaded
                   type: string
+                  pattern: '^.*?$'
                   minLength: 1
                   maxLength: 300
                   example: "Nice pic!"
@@ -394,21 +389,16 @@ paths:
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
-        
-  /photos/{photoID}/likes:
+  
+  /photos/{photoID}/likes/{likeID}:
     parameters:
       - $ref: "#/components/parameters/photoID"
-    post:
+      - $ref: "#/components/parameters/likeID"
+    put:
       tags: ["Photo"]
       summary: Adds a like to a photo
       description: Adds a like to the photo
       operationId: likePhoto
-      requestBody:
-        description: Username of user that liked the photo
-        content:
-          application/json:
-            schema: { $ref: "#/components/schemas/username" }
-        required: true
       responses:
         '201':
           description: User banned successfully.
@@ -416,11 +406,6 @@ paths:
             application/json:
               schema: { $ref : "#/components/schemas/ID"}
         '401': { $ref: '#/components/responses/UnauthorizedError' }
-  
-  /photos/{photoID}/likes/{likeID}:
-    parameters:
-      - $ref: "#/components/parameters/photoID"
-      - $ref: "#/components/parameters/likeID"
     delete:
       tags: ["Photo"]
       summary: Removes a like
