@@ -13,13 +13,9 @@ components:
       type: object
       properties:
         photos:
-          description: User's photos (in reverse chronological order).
+          description: User's photos IDs.
           type: array
-          items:
-            type: string
-            format: binary
-            minLength: 1
-            maxLength: 300
+          items: { $ref: "#/components/schemas/image" }
           minItems: 0
           maxItems: 10000
         numberOfPhotos:
@@ -43,12 +39,7 @@ components:
       description: This represents a sigle user post.
       type: object
       properties:          
-        photo:
-          description: The photo posted.
-          type: string
-          format: binary
-          minLength: 1
-          maxLength: 300
+        photo: { $ref: "#/components/schemas/image" }
         dateAndTime:
           description: Date and time on which the photo was posted.
           type: string
@@ -76,7 +67,15 @@ components:
       title: Generic ID
       description: Unique identifier
       type: string
-      pattern: "^[A-Z0-9]*$"
+      pattern: "^[a-zA-Z0-9]*$"
+      minLength: 10
+      maxLength: 10
+      readOnly: true
+    image:
+      title: Raw image
+      description: ID of photo
+      type: string
+      pattern: "^[a-zA-Z0-9]*$"
       minLength: 10
       maxLength: 10
       readOnly: true
@@ -170,6 +169,7 @@ paths:
         content:
           application/json:
             schema:
+              description: Object containing the username of the user that wants to log in 
               type: object
               properties:
                 name:
@@ -186,6 +186,7 @@ paths:
           content:
             application/json:
               schema:
+                description: Object containing the user's identifier
                 type: object
                 properties:
                   identifier:
@@ -252,6 +253,7 @@ paths:
           content:
             application/json:
               schema:
+                description: Array of user posts
                 type: array
                 items: { $ref: "#/components/schemas/userPost"}
                 minItems: 1
@@ -323,6 +325,7 @@ paths:
         content:
           image/png: 
             schema:
+              description: File to be uploaded
               type: string
               format: binary
       responses:
@@ -346,6 +349,23 @@ paths:
         '204': { $ref: '#/components/responses/NoContent' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
     
+  /photos/{photoID}:
+    parameters:
+      - $ref: "#/components/parameters/photoID"
+    get:
+      tags: ["Photo"]
+      summary: Gets the raw image
+      description: Returns the image requested
+      responses:
+        '200':
+          description: Requested image
+          content:
+            image/png:
+              schema:
+                description: Raw image
+                type: string
+                format: binary
+
   /photos/{photoID}/comments:
     parameters:
       - $ref: "#/components/parameters/photoID"
@@ -359,13 +379,14 @@ paths:
         content:
           application/json:
             schema:
+              description: Object containing username and comment of the person that commented
               type: object
               properties:
                 username: { $ref: '#/components/schemas/username' }
                 comment:
                   description: Comment to be uploaded
                   type: string
-                  pattern: '^.*?$'
+                  pattern: "^.*?$"
                   minLength: 1
                   maxLength: 300
                   example: "Nice pic!"
