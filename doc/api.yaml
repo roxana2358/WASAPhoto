@@ -111,9 +111,18 @@ components:
       description: Unique comment identifier
       schema: { $ref: "#/components/schemas/ID"}
       required: true
-    followedID: { $ref: "#/components/parameters/userID"}
-    bannedID: { $ref: "#/components/parameters/userID"}
-    likeID: { $ref: "#/components/parameters/userID"}
+    followingID: 
+      name: followingID
+      in: path
+      description: Unique follow identifier
+      schema: { $ref: "#/components/schemas/ID"}
+      required: true
+    bannedID: 
+      name: bannedID
+      in: path
+      description: Unique banned identifier
+      schema: { $ref: "#/components/schemas/ID"}
+      required: true
   securitySchemes:
     bearerAuth:
       description: Bearer authentication scheme
@@ -248,10 +257,10 @@ paths:
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '500': { $ref: '#/components/responses/InternalServerError' }
     
-  /users/{userID}/following/{followedID}:
+  /users/{userID}/following/{followingID}:
     parameters:
       - $ref: "#/components/parameters/userID" 
-      - $ref: "#/components/parameters/followedID"
+      - $ref: "#/components/parameters/followingID"
     put:
       tags: ["Following"]
       summary: Follows user
@@ -415,10 +424,10 @@ paths:
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: '#/components/responses/InternalServerError' }
   
-  /photos/{photoID}/likes/{likeID}:
+  /photos/{photoID}/likes/{userID}:
     parameters:
       - $ref: "#/components/parameters/photoID"
-      - $ref: "#/components/parameters/likeID"
+      - $ref: "#/components/parameters/userID"
     put:
       tags: ["Photo"]
       summary: Adds a like to a photo
