@@ -83,11 +83,15 @@ components:
     NoContent: 
       description: "Operation successful; no response body needed."
     BadRequest:
-      description: The username cannot be used.
+      description: The request was not compliant with the documentation (eg. missing fields, etc).
     UnauthorizedError:
       description: Access token is missing or invalid
     NotFound:
       description: The server cannot find the requested resource.
+    Conflict:
+      description: This action could lead to conflicts in the database. You must change the request body and try again.
+    InternalServerError:
+      description: The server encountered an internal error. Further info in server logs.
   parameters:
     userID:
       name: userID
@@ -172,8 +176,9 @@ paths:
                     minimum: 0
                     maximum: 999999
                     example: 182
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-  
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
   /users/:
     summary: List of users
     description: This is the list of all users.
@@ -195,8 +200,10 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/userProfile" }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
   
   /users/{userID}:
     parameters:
@@ -217,6 +224,9 @@ paths:
         '204': { $ref: '#/components/responses/NoContent' }
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
     get:
       tags: ["User"]
       summary: Gets user's stream.
@@ -234,7 +244,9 @@ paths:
                 items: { $ref: "#/components/schemas/userPost"}
                 minItems: 1
                 maxItems: 50
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
     
   /users/{userID}/following/{followedID}:
     parameters:
@@ -247,7 +259,10 @@ paths:
       operationId: followUser
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
     delete:
       tags: ["Following"]
       summary: Unfollows user
@@ -255,7 +270,10 @@ paths:
       operationId: unfollowUser
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
   
   /users/{userID}/ban/{bannedID}:
     parameters:
@@ -268,7 +286,10 @@ paths:
       operationId: banUser
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
     delete:
       tags: ["Ban"]
       summary: Unbans user
@@ -276,7 +297,10 @@ paths:
       operationId: unbanUser
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
   
   /photos/:
     summary: List of photos
@@ -302,7 +326,9 @@ paths:
           content:
             application/json:
               schema: { $ref : "#/components/schemas/ID"}
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
 
   /photos/{photoID}:
     parameters:
@@ -323,6 +349,10 @@ paths:
                 format: binary
                 minLength: 1
                 maxLength: 10000
+        '400': { $ref: "#/components/responses/BadRequest" }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: "#/components/responses/NotFound" }
+        '500': { $ref: '#/components/responses/InternalServerError' }
     delete:
       tags: ["Photo"]
       summary: Deletes a photo
@@ -330,7 +360,10 @@ paths:
       operationId: deletePhoto
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: "#/components/responses/NotFound" }
+        '500': { $ref: '#/components/responses/InternalServerError' }
 
   /photos/{photoID}/comments:
     parameters:
@@ -362,7 +395,9 @@ paths:
           content:
             application/json:
               schema: { $ref : "#/components/schemas/ID"}
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
     
   /photos/{photoID}/comments/{commentID}:
     parameters:
@@ -375,7 +410,10 @@ paths:
       operationId: uncommentPhoto
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: "#/components/responses/NotFound" }
+        '500': { $ref: '#/components/responses/InternalServerError' }
   
   /photos/{photoID}/likes/{likeID}:
     parameters:
@@ -388,7 +426,10 @@ paths:
       operationId: likePhoto
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
     delete:
       tags: ["Photo"]
       summary: Removes a like
@@ -396,4 +437,7 @@ paths:
       operationId: unlikePhoto
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' } 
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
