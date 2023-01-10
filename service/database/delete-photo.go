@@ -5,7 +5,7 @@ package database
  */
 func (db *appdbimpl) DeletePhoto(userID uint64, postID uint64) error {
 	// see if user is the owner of photo
-	row := db.c.QueryRow(`SELECT UserId FROM POSTS WHERE PostId=?`, postID)
+	row := db.c.QueryRow(`SELECT UserId FROM Posts WHERE PostId=?`, postID)
 	var owner uint64
 	if row.Scan(&owner) != nil {
 		// if there is no row with the postID, the photo is not in database
@@ -17,7 +17,7 @@ func (db *appdbimpl) DeletePhoto(userID uint64, postID uint64) error {
 	}
 
 	// delete photo from database
-	res, err := db.c.Exec(`DELETE FROM POSTS WHERE PostId=?`, postID)
+	res, err := db.c.Exec(`DELETE FROM Posts WHERE PostId=?`, postID)
 	if err != nil {
 		return err
 	}
@@ -31,13 +31,13 @@ func (db *appdbimpl) DeletePhoto(userID uint64, postID uint64) error {
 	}
 
 	// delete all likes on post
-	_, err = db.c.Exec(`DELETE FROM LIKES WHERE PostId=?`, postID)
+	_, err = db.c.Exec(`DELETE FROM Likes WHERE PostId=?`, postID)
 	if err != nil {
 		return err
 	}
 
 	// delete all comments on post
-	_, err = db.c.Exec(`DELETE FROM COMMENTS WHERE PostId=?`, postID)
+	_, err = db.c.Exec(`DELETE FROM Comments WHERE PostId=?`, postID)
 	if err != nil {
 		return err
 	}

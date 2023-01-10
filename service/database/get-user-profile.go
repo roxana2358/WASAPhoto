@@ -6,7 +6,7 @@ package database
 func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofile, error) {
 	var userProfile Userprofile
 	// check if user is banned
-	row := db.c.QueryRow(`SELECT UserId FROM BAN WHERE UserId=? AND BannedId=?`, profileID, userID)
+	row := db.c.QueryRow(`SELECT UserId FROM Ban WHERE UserId=? AND BannedId=?`, profileID, userID)
 	var id int
 	err := row.Scan(&id)
 	if err == nil {
@@ -15,14 +15,14 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 	}
 
 	// 1) find username
-	row = db.c.QueryRow(`SELECT Username FROM USERS WHERE Id=?`, profileID)
+	row = db.c.QueryRow(`SELECT Username FROM Users WHERE Id=?`, profileID)
 	var username string
 	if row.Scan(&username) != nil {
 		return userProfile, ErrUserNotFound
 	}
 
 	// 2) find photos and their number
-	rows, err := db.c.Query(`SELECT PostId FROM POSTS WHERE UserId=?`, profileID)
+	rows, err := db.c.Query(`SELECT PostId FROM Posts WHERE UserId=?`, profileID)
 	if err != nil {
 		return userProfile, err
 	}
@@ -42,7 +42,7 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 	}
 
 	// 3) find following
-	rows, err = db.c.Query(`SELECT FollowingID FROM FOLLOWING WHERE UserId=?`, profileID)
+	rows, err = db.c.Query(`SELECT FollowingID FROM Following WHERE UserId=?`, profileID)
 	if err != nil {
 		return userProfile, err
 	}
@@ -57,7 +57,7 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 			return userProfile, err
 		}
 
-		row = db.c.QueryRow(`SELECT Username FROM USERS WHERE Id=?`, followID)
+		row = db.c.QueryRow(`SELECT Username FROM Users WHERE Id=?`, followID)
 		if row.Scan(&follow) != nil {
 			return userProfile, err
 		}
@@ -69,7 +69,7 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 	}
 
 	// 4) find followers
-	rows, err = db.c.Query(`SELECT UserId FROM FOLLOWING WHERE FollowingID=?`, profileID)
+	rows, err = db.c.Query(`SELECT UserId FROM Following WHERE FollowingID=?`, profileID)
 	if err != nil {
 		return userProfile, err
 	}
@@ -84,7 +84,7 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 			return userProfile, err
 		}
 
-		row = db.c.QueryRow(`SELECT Username FROM USERS WHERE Id=?`, followerID)
+		row = db.c.QueryRow(`SELECT Username FROM Users WHERE Id=?`, followerID)
 		if row.Scan(&follower) != nil {
 			return userProfile, err
 		}

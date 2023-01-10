@@ -5,7 +5,7 @@ package database
  */
 func (db *appdbimpl) DeleteLike(userID uint64, postID uint64) error {
 	// unlike photo
-	res, err := db.c.Exec(`DELETE FROM LIKES WHERE PostId=? AND UserId=?`, postID, userID)
+	res, err := db.c.Exec(`DELETE FROM Likes WHERE PostId=? AND UserId=?`, postID, userID)
 	if err != nil {
 		return err
 	}

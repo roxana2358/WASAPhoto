@@ -5,7 +5,7 @@ package database
  */
 func (db *appdbimpl) CreateComment(userID uint64, postID uint64, comment string) (uint64, error) {
 	// get the id of the owner of the photo
-	row := db.c.QueryRow(`SELECT UserId FROM POSTS WHERE PostId=?`, postID)
+	row := db.c.QueryRow(`SELECT UserId FROM Posts WHERE PostId=?`, postID)
 	var owner uint64
 	if row.Scan(&owner) != nil {
 		// if there is no row with the id, the post is not in database
@@ -13,7 +13,7 @@ func (db *appdbimpl) CreateComment(userID uint64, postID uint64, comment string)
 	}
 
 	// check if user is banned
-	row = db.c.QueryRow(`SELECT BannedId FROM BAN WHERE UserId=? AND BannedId=?`, owner, userID)
+	row = db.c.QueryRow(`SELECT BannedId FROM Ban WHERE UserId=? AND BannedId=?`, owner, userID)
 	var banned uint64
 	if row.Scan(&banned) == nil {
 		// if there is a row the user was banned
@@ -21,7 +21,7 @@ func (db *appdbimpl) CreateComment(userID uint64, postID uint64, comment string)
 	}
 
 	// comment
-	res, err := db.c.Exec(`INSERT INTO COMMENTS (PostId, UserId, Text) VALUES (?, ?, ?)`, postID, userID, comment)
+	res, err := db.c.Exec(`INSERT INTO Comments (PostId, UserId, Text) VALUES (?, ?, ?)`, postID, userID, comment)
 	if err != nil {
 		return 0, err
 	}
