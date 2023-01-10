@@ -55,10 +55,10 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Users
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Users';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE Users 
-						(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
-						 Username TEXT PRIMARY KEY
-				 		);`
+		sqlStmt := `CREATE TABLE IF NOT EXISTS Users (
+			Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+			Username TEXT PRIMARY KEY
+			);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
@@ -68,12 +68,12 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Following (UserId FOLLOWES FollowingID)
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Following';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE Following 
-						(UserId INTEGER NOT NULL, 
-						 FollowingID INTEGER NOT NULL,
-						 FOREIGN KEY(UserId) REFERENCES Users(Id),
-						 FOREIGN KEY(FollowingID) REFERENCES Users(Id)
-				 		);`
+		sqlStmt := `CREATE TABLE IF NOT EXISTS Following (
+			UserId INTEGER NOT NULL, 
+			FollowingID INTEGER NOT NULL,
+			FOREIGN KEY(UserId) REFERENCES Users(Id),
+			FOREIGN KEY(FollowingID) REFERENCES Users(Id)
+);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
@@ -83,12 +83,12 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Ban (UserId BANNED BannedId)
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Ban';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE Ban 
-						(UserId INTEGER NOT NULL, 
-						 BannedId INTEGER NOT NULL,
-						 FOREIGN KEY(UserId) REFERENCES Users(Id),
-						 FOREIGN KEY(BannedId) REFERENCES Users(Id)
-				 		);`
+		sqlStmt := `CREATE TABLE IF NOT EXISTS Ban (
+			UserId INTEGER NOT NULL, 
+			BannedId INTEGER NOT NULL,
+			FOREIGN KEY(UserId) REFERENCES Users(Id),
+			FOREIGN KEY(BannedId) REFERENCES Users(Id)
+);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
@@ -98,14 +98,14 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Posts
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Posts';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE Posts 
-						(PostId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
-						 UserId INTEGER,
-						 Filename TEXT,
-						 Time TEXT,
-						 Date TEXT,
-						 FOREIGN KEY(UserId) REFERENCES Users(Id)
-				 		);`
+		sqlStmt := `CREATE TABLE IF NOT EXISTS Posts (
+			PostId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+			UserId INTEGER,
+			Filename TEXT,
+			Time TEXT,
+			Date TEXT,
+			FOREIGN KEY(UserId) REFERENCES Users(Id)
+);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
@@ -115,12 +115,12 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Likes
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Likes';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE Likes 
-						(PostId INTEGER NOT NULL,
-						 UserId INTEGER NOT NULL,
-						 FOREIGN KEY(PostId) REFERENCES Posts(PostId),
-						 FOREIGN KEY(UserId) REFERENCES Users(Id)
-				 		);`
+		sqlStmt := `CREATE TABLE IF NOT EXISTS Likes (
+			PostId INTEGER NOT NULL,
+			UserId INTEGER NOT NULL,
+			FOREIGN KEY(PostId) REFERENCES Posts(PostId),
+			FOREIGN KEY(UserId) REFERENCES Users(Id)
+);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
@@ -130,14 +130,14 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Comments
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Comments';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE Comments 
-						(CommentId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-						 PostId INTEGER NOT NULL,
-						 UserId INTEGER NOT NULL, 
-						 Text TEXT,
-						 FOREIGN KEY(PostId) REFERENCES Posts(PostId),
-						 FOREIGN KEY(UserId) REFERENCES Users(Id)
-				 		);`
+		sqlStmt := `CREATE TABLE IF NOT EXISTS Comments (
+			CommentId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			PostId INTEGER NOT NULL,
+			UserId INTEGER NOT NULL, 
+			Text TEXT,
+			FOREIGN KEY(PostId) REFERENCES Posts(PostId),
+			FOREIGN KEY(UserId) REFERENCES Users(Id)
+);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
