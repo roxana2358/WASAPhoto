@@ -5,7 +5,7 @@ package database
  */
 func (db *appdbimpl) UpdateUsername(id uint64, newUsername string) error {
 	// check if username already taken
-	row := db.c.QueryRow(`SELECT ID FROM USERS WHERE USERNAME=?`, newUsername)
+	row := db.c.QueryRow(`SELECT Id FROM USERS WHERE Username=?`, newUsername)
 	var otherId uint64
 	if row.Scan(&otherId) == nil && id != otherId {
 		// username not available
@@ -13,7 +13,7 @@ func (db *appdbimpl) UpdateUsername(id uint64, newUsername string) error {
 	}
 
 	// if not, try updating username
-	res, err := db.c.Exec(`UPDATE USERS SET USERNAME=? WHERE ID=?`, newUsername, id)
+	res, err := db.c.Exec(`UPDATE USERS SET Username=? WHERE Id=?`, newUsername, id)
 	if err != nil {
 		return err
 	}

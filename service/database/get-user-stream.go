@@ -8,13 +8,13 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 	var userPost Userpost
 
 	// request 30 posts
-	rows, err := db.c.Query(`SELECT USERS.USERNAME, POSTS.POST-ID, POSTS.DATE, POSTS.TIME
+	rows, err := db.c.Query(`SELECT USERS.Username, POSTS.PostId, POSTS.Date, POSTS.Time
 							FROM FOLLOWING 
-							INNER JOIN POSTS ON FOLLOWING.FOLLOWING-ID=POSTS.USER-ID
-							INNER JOIN USERS ON FOLLOWING.FOLLOWING-ID=USERS.ID
-							WHERE FOLLOWING.USER-ID=?
+							INNER JOIN POSTS ON FOLLOWING.FollowingID=POSTS.UserId
+							INNER JOIN USERS ON FOLLOWING.FollowingID=USERS.Id
+							WHERE FOLLOWING.UserId=?
 							LIMIT 30
-							ORDERBY DATE DESC,TIME DESC`, userID)
+							ORDERBY Date DESC,Time DESC`, userID)
 	if err != nil {
 		return userStream, err
 	}
@@ -29,8 +29,8 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 		// get number of likes
 		row := db.c.QueryRow(`SELECT count(*) 
 							FROM POSTS 
-							INNER JOIN LIKES ON POSTS.POST-ID=LIKES.POST-ID 
-							WHERE POST-ID=?`, userPost.PostID)
+							INNER JOIN LIKES ON POSTS.PostId=LIKES.PostId 
+							WHERE PostId=?`, userPost.PostID)
 		var likes int
 		err = row.Scan(&likes)
 		if err != nil {
@@ -40,8 +40,8 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 		// get number of comments
 		row = db.c.QueryRow(`SELECT count(*) 
 							FROM POSTS 
-							INNER JOIN COMMENTS ON POSTS.POST-ID=COMMENTS.POST-ID 
-							WHERE POST-ID=?`, userPost.PostID)
+							INNER JOIN COMMENTS ON POSTS.PostId=COMMENTS.PostId 
+							WHERE PostId=?`, userPost.PostID)
 		var comments int
 		err = row.Scan(&comments)
 		if err != nil {
