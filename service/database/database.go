@@ -52,10 +52,10 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Check if tables exist. If not, the database is empty, and we need to create the structure
 	var tableName string
 
-	// USERS
-	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='USERS';`).Scan(&tableName)
+	// Users
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Users';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE USERS 
+		sqlStmt := `CREATE TABLE Users 
 						(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 						 Username TEXT PRIMARY KEY
 				 		);`
@@ -65,14 +65,14 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	// FOLLOWING (UserId FOLLOWES FollowingID)
-	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='FOLLOWING';`).Scan(&tableName)
+	// Following (UserId FOLLOWES FollowingID)
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Following';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE FOLLOWING 
+		sqlStmt := `CREATE TABLE Following 
 						(UserId INTEGER NOT NULL, 
 						 FollowingID INTEGER NOT NULL,
-						 FOREIGN KEY(UserId) REFERENCES USERS(Id),
-						 FOREIGN KEY(FollowingID) REFERENCES USERS(Id)
+						 FOREIGN KEY(UserId) REFERENCES Users(Id),
+						 FOREIGN KEY(FollowingID) REFERENCES Users(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -80,14 +80,14 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	// BAN (UserId BANNED BannedId)
-	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='BAN';`).Scan(&tableName)
+	// Ban (UserId BANNED BannedId)
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Ban';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE BAN 
+		sqlStmt := `CREATE TABLE Ban 
 						(UserId INTEGER NOT NULL, 
 						 BannedId INTEGER NOT NULL,
-						 FOREIGN KEY(UserId) REFERENCES USERS(Id),
-						 FOREIGN KEY(BannedId) REFERENCES USERS(Id)
+						 FOREIGN KEY(UserId) REFERENCES Users(Id),
+						 FOREIGN KEY(BannedId) REFERENCES Users(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -95,16 +95,16 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	// POSTS
-	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='POSTS';`).Scan(&tableName)
+	// Posts
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Posts';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE POSTS 
+		sqlStmt := `CREATE TABLE Posts 
 						(PostId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 						 UserId INTEGER,
 						 Filename TEXT,
 						 Time TEXT,
 						 Date TEXT,
-						 FOREIGN KEY(UserId) REFERENCES USERS(Id)
+						 FOREIGN KEY(UserId) REFERENCES Users(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -112,14 +112,14 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	// LIKES
-	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='LIKES';`).Scan(&tableName)
+	// Likes
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Likes';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE LIKES 
+		sqlStmt := `CREATE TABLE Likes 
 						(PostId INTEGER NOT NULL,
 						 UserId INTEGER NOT NULL,
-						 FOREIGN KEY(PostId) REFERENCES POSTS(PostId),
-						 FOREIGN KEY(UserId) REFERENCES USERS(Id)
+						 FOREIGN KEY(PostId) REFERENCES Posts(PostId),
+						 FOREIGN KEY(UserId) REFERENCES Users(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -127,16 +127,16 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	// COMMENTS
-	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='COMMENTS';`).Scan(&tableName)
+	// Comments
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Comments';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE COMMENTS 
+		sqlStmt := `CREATE TABLE Comments 
 						(CommentId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 						 PostId INTEGER NOT NULL,
 						 UserId INTEGER NOT NULL, 
 						 Text TEXT,
-						 FOREIGN KEY(PostId) REFERENCES POSTS(PostId),
-						 FOREIGN KEY(UserId) REFERENCES USERS(Id)
+						 FOREIGN KEY(PostId) REFERENCES Posts(PostId),
+						 FOREIGN KEY(UserId) REFERENCES Users(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {

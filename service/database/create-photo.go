@@ -12,7 +12,7 @@ import (
  */
 func (db *appdbimpl) CreatePhoto(userID uint64, time string, date string, image image.Image) (uint64, error) {
 	// INSERT photo in database
-	res, err := db.c.Exec(`INSERT INTO POSTS (UserId, Time, Date) VALUES (?, ?, ?)`, userID, time, date)
+	res, err := db.c.Exec(`INSERT INTO Posts (UserId, Time, Date) VALUES (?, ?, ?)`, userID, time, date)
 	if err != nil {
 		return 0, err
 	}
@@ -34,7 +34,7 @@ func (db *appdbimpl) CreatePhoto(userID uint64, time string, date string, image 
 	if err != nil {
 		return 0, err
 	}
-	_, err = db.c.Exec(`UPDATE POSTS SET Filename=? WHERE PostId=?`, fileName, lastInsertID)
+	_, err = db.c.Exec(`UPDATE Posts SET Filename=? WHERE PostId=?`, fileName, lastInsertID)
 	if err != nil {
 		return 0, err
 	}

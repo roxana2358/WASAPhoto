@@ -10,7 +10,7 @@ import (
  */
 func (db *appdbimpl) GetImage(imageId uint64) (image.Image, error) {
 	// QUERY: find name of file with imageId
-	row := db.c.QueryRow(`SELECT Filename FROM POSTS WHERE PostId=?`, imageId)
+	row := db.c.QueryRow(`SELECT Filename FROM Posts WHERE PostId=?`, imageId)
 	var filename string
 	if row.Scan(&filename) != nil {
 		return nil, ErrFileNotFound
