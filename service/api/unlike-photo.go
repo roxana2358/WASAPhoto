@@ -11,7 +11,7 @@ import (
 )
 
 /**
-* Removes a like from a photo.
+* Removes a like from the photo.
  */
 func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// token extraction
@@ -23,14 +23,6 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		// error on our side: log the error and send a 500 to the user
 		ctx.Logger.WithError(err).Error("can't extract token")
 		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// The ID of the photo is a 64-bit unsigned integer
-	postID, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
-	if err != nil {
-		// The value was not uint64, reject the action indicating an error on the client side
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -48,7 +40,15 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// create like
+	// The ID of the photo is a 64-bit unsigned integer
+	postID, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
+	if err != nil {
+		// The value was not uint64, reject the action indicating an error on the client side
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// delete like
 	err = rt.db.DeleteLike(userID, postID)
 	if errors.Is(err, database.ErrPostNotFound) {
 		w.WriteHeader(http.StatusNotFound)

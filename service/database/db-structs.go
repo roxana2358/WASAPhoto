@@ -9,7 +9,6 @@ var ErrFollowNotFound = errors.New("currently not following this user")
 var ErrBanNotFound = errors.New("user currently not banned")
 var ErrPostNotFound = errors.New("post not in database")
 var ErrFileNotFound = errors.New("file not found in database")
-var ErrDecode = errors.New("decoding error")
 var ErrUnauthorized = errors.New("the user is not authorized for this action")
 var ErrCommentNotFound = errors.New("the comment is not in database")
 

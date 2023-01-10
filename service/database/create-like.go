@@ -1,11 +1,19 @@
 package database
 
 /**
-* Adds new like to database; returns id or error if the request is unsuccessfull.
+* Adds new like to database; returns an error if the request is unsuccessfull.
  */
 func (db *appdbimpl) CreateLike(userID uint64, postID uint64) error {
-	// check if user is blocked
-	row := db.c.QueryRow(`SELECT BANNED-ID FROM BAN WHERE USER-ID=?`, postID)
+	// get the id of the owner of the photo
+	row := db.c.QueryRow(`SELECT USER-ID FROM POSTS WHERE POST-ID=?`, postID)
+	var owner uint64
+	if row.Scan(&owner) != nil {
+		// if there is no row with the id, the post is not in database
+		return ErrPostNotFound
+	}
+
+	// check if user is banned
+	row = db.c.QueryRow(`SELECT BANNED-ID FROM BAN WHERE USER-ID=? AND BANNED-ID=?`, owner, userID)
 	var banned uint64
 	if row.Scan(&banned) == nil {
 		// if there is a row the user was banned
@@ -13,17 +21,10 @@ func (db *appdbimpl) CreateLike(userID uint64, postID uint64) error {
 	}
 
 	// like photo
-	res, err := db.c.Exec(`INSERT INTO LIKES (POST-ID, USER-ID) VALUES (?, ?)`, postID, userID)
+	_, err := db.c.Exec(`INSERT INTO LIKES (POST-ID, USER-ID) VALUES (?, ?)`, postID, userID)
 	if err != nil {
 		return err
 	}
 
-	// check if it affected the database
-	affected, err := res.RowsAffected()
-	if err != nil {
-		return err
-	} else if affected == 0 {
-		return ErrPostNotFound
-	}
 	return nil
 }

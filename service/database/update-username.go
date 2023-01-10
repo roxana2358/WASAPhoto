@@ -4,7 +4,7 @@ package database
 * Updates username of user with given id; returns error if the request is unsuccessfull.
  */
 func (db *appdbimpl) UpdateUsername(id uint64, newUsername string) error {
-	// check if username already taken (no use of triggers)
+	// check if username already taken
 	row := db.c.QueryRow(`SELECT ID FROM USERS WHERE USERNAME=?`, newUsername)
 	var otherId uint64
 	if row.Scan(&otherId) == nil && id != otherId {
@@ -12,7 +12,7 @@ func (db *appdbimpl) UpdateUsername(id uint64, newUsername string) error {
 		return ErrUsernameNotAvailable
 	}
 
-	// if not, try updating usernames
+	// if not, try updating username
 	res, err := db.c.Exec(`UPDATE USERS SET USERNAME=? WHERE ID=?`, newUsername, id)
 	if err != nil {
 		return err

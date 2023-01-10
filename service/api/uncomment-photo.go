@@ -11,7 +11,7 @@ import (
 )
 
 /**
-* Removes comment from photo.
+* Removes a comment from the photo.
  */
 func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// token extraction
@@ -42,6 +42,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
+	// delete comment
 	err = rt.db.DeleteComment(token, postID, commentID)
 	if errors.Is(err, database.ErrCommentNotFound) {
 		w.WriteHeader(http.StatusNotFound)

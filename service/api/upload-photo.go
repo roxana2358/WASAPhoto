@@ -13,7 +13,7 @@ import (
 )
 
 /**
-* Uploads a photo.
+* Uploads the photo send in the request body.
  */
 func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// token extraction

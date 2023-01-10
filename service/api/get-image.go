@@ -12,10 +12,10 @@ import (
 )
 
 /**
-* Returns the image requested.
+* Gets the image requested.
  */
 func (rt *_router) getImage(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// token extraction; not necessary because if we received the photoID user is authorized
+	// token extraction; real token not necessary because if we received the photoID user is allowed to request it
 	_, err := getHeaderToken(r)
 	if errors.Is(err, ErrUnauthorized) {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -28,15 +28,15 @@ func (rt *_router) getImage(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// The ID of the photo is a 64-bit unsigned integer
-	post, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
+	postId, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
 	if err != nil {
 		// The value was not uint64, reject the action indicating an error on the client side
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	//request the photo
-	img, err := rt.db.GetImage(post)
+	// request the photo
+	img, err := rt.db.GetImage(postId)
 	if errors.Is(err, database.ErrFileNotFound) {
 		w.WriteHeader(http.StatusNotFound)
 		return

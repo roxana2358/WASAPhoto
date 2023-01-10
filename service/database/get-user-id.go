@@ -1,7 +1,7 @@
 package database
 
 /**
-* Cheks if username in database: if present returns the id and no error, otherwise returns (nil, error).
+* Checks if username is in database: if present returns the id and no error.
  */
 func (db *appdbimpl) GetUserId(username string) (uint64, error) {
 	// QUERY: find the id of requested username

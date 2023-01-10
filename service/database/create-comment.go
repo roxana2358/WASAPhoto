@@ -4,7 +4,7 @@ package database
 * Adds a new comment in the database and returns (commentID, nil) if no errors occured.
  */
 func (db *appdbimpl) CreateComment(userID uint64, postID uint64, comment string) (uint64, error) {
-	// get owner id
+	// get the id of the owner of the photo
 	row := db.c.QueryRow(`SELECT USER-ID FROM POSTS WHERE POST-ID=?`, postID)
 	var owner uint64
 	if row.Scan(&owner) != nil {
@@ -13,7 +13,7 @@ func (db *appdbimpl) CreateComment(userID uint64, postID uint64, comment string)
 	}
 
 	// check if user is banned
-	row = db.c.QueryRow(`SELECT BANNED-ID FROM BAN WHERE USER-ID=?`, postID)
+	row = db.c.QueryRow(`SELECT BANNED-ID FROM BAN WHERE USER-ID=? AND BANNED-ID=?`, owner, userID)
 	var banned uint64
 	if row.Scan(&banned) == nil {
 		// if there is a row the user was banned
@@ -32,6 +32,5 @@ func (db *appdbimpl) CreateComment(userID uint64, postID uint64, comment string)
 		return 0, err
 	}
 
-	// return id and no error
 	return uint64(lastInsertID), nil
 }

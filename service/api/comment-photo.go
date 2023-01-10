@@ -12,7 +12,7 @@ import (
 )
 
 /**
-* Adds comment to photo.
+* Adds a comment to the photo.
  */
 func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// token extraction

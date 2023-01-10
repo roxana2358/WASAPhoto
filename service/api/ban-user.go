@@ -51,7 +51,7 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 	// proceed banning the user
 	err = rt.db.CreateBan(token, bannedId)
 	if errors.Is(err, database.ErrUserNotFound) || errors.Is(err, database.ErrUserBanned) {
-		// the "banned" user does not exist or token was banned
+		// one of the users does not exist or the user was banned first
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
