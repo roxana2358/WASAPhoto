@@ -56,8 +56,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='USERS';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE USERS 
-						(ID INTEGER NOT NULL AUTOINCREMENT PRIMARY KEY, 
-						 USERNAME TEXT PRIMARY KEY
+						(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+						 Username TEXT PRIMARY KEY
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -65,14 +65,14 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	// FOLLOWING (USER-ID FOLLOWES FOLLOWING-ID)
+	// FOLLOWING (UserId FOLLOWES FollowingID)
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='FOLLOWING';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE FOLLOWING 
-						(USER-ID INTEGER NOT NULL, 
-						 FOLLOWING-ID INTEGER NOT NULL,
-						 FOREIGN KEY(USER-ID) REFERENCES USERS(ID),
-						 FOREIGN KEY(FOLLOWING-ID) REFERENCES USERS(ID)
+						(UserId INTEGER NOT NULL, 
+						 FollowingID INTEGER NOT NULL,
+						 FOREIGN KEY(UserId) REFERENCES USERS(Id),
+						 FOREIGN KEY(FollowingID) REFERENCES USERS(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -80,14 +80,14 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	// BAN (USER-ID BANNED BANNED-ID)
+	// BAN (UserId BANNED BannedId)
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='BAN';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE BAN 
-						(USER-ID INTEGER NOT NULL, 
-						 BANNED-ID INTEGER NOT NULL,
-						 FOREIGN KEY(USER-ID) REFERENCES USERS(ID),
-						 FOREIGN KEY(BANNED-ID) REFERENCES USERS(ID)
+						(UserId INTEGER NOT NULL, 
+						 BannedId INTEGER NOT NULL,
+						 FOREIGN KEY(UserId) REFERENCES USERS(Id),
+						 FOREIGN KEY(BannedId) REFERENCES USERS(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -99,12 +99,12 @@ func New(db *sql.DB) (AppDatabase, error) {
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='POSTS';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE POSTS 
-						(POST-ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
-						 USER-ID INTEGER,
-						 FILENAME TEXT,
-						 TIME TEXT,
-						 DATE TEXT,
-						 FOREIGN KEY(USER-ID) REFERENCES USERS(ID)
+						(PostId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+						 UserId INTEGER,
+						 Filename TEXT,
+						 Time TEXT,
+						 Date TEXT,
+						 FOREIGN KEY(UserId) REFERENCES USERS(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -116,10 +116,10 @@ func New(db *sql.DB) (AppDatabase, error) {
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='LIKES';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE LIKES 
-						(POST-ID INTEGER NOT NULL,
-						 USER-ID INTEGER NOT NULL,
-						 FOREIGN KEY(POST-ID) REFERENCES POSTS(POST-ID),
-						 FOREIGN KEY(USER-ID) REFERENCES USERS(ID)
+						(PostId INTEGER NOT NULL,
+						 UserId INTEGER NOT NULL,
+						 FOREIGN KEY(PostId) REFERENCES POSTS(PostId),
+						 FOREIGN KEY(UserId) REFERENCES USERS(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -131,12 +131,12 @@ func New(db *sql.DB) (AppDatabase, error) {
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='COMMENTS';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE COMMENTS 
-						(COMMENT-ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-						 POST-ID INTEGER NOT NULL,
-						 USER-ID INTEGER NOT NULL, 
-						 TEXT TEXT,
-						 FOREIGN KEY(POST-ID) REFERENCES POSTS(POST-ID),
-						 FOREIGN KEY(USER-ID) REFERENCES USERS(ID)
+						(CommentId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+						 PostId INTEGER NOT NULL,
+						 UserId INTEGER NOT NULL, 
+						 Text TEXT,
+						 FOREIGN KEY(PostId) REFERENCES POSTS(PostId),
+						 FOREIGN KEY(UserId) REFERENCES USERS(Id)
 				 		);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {

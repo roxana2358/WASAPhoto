@@ -5,7 +5,7 @@ package database
  */
 func (db *appdbimpl) DeleteComment(userID uint64, postID uint64, commentID uint64) error {
 	// delete comment from database
-	res, err := db.c.Exec(`DELETE FROM COMMENTS WHERE POST-ID=? AND COMMENT-ID=?`, postID, commentID)
+	res, err := db.c.Exec(`DELETE FROM COMMENTS WHERE PostId=? AND CommentId=?`, postID, commentID)
 	if err != nil {
 		return err
 	}
