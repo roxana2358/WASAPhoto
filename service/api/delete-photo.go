@@ -11,7 +11,7 @@ import (
 )
 
 /**
-* Deletes photo.
+* Deletes the photo from user's profile.
  */
 func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// token extraction
@@ -27,7 +27,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// The ID of the photo is a 64-bit unsigned integer
-	post, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
+	photoId, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
 	if err != nil {
 		// The value was not uint64, reject the action indicating an error on the client side
 		w.WriteHeader(http.StatusBadRequest)
@@ -35,8 +35,8 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// delete image
-	err = rt.db.DeletePhoto(token, post)
-	if errors.Is(err, database.ErrFileNotFound) || errors.Is(err, database.ErrPostNotFound) {
+	err = rt.db.DeletePhoto(token, photoId)
+	if errors.Is(err, database.ErrPostNotFound) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if errors.Is(err, database.ErrUnauthorized) {
@@ -44,7 +44,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	} else if err != nil {
 		// error on our side: log the error and send a 500 to the user
-		ctx.Logger.WithError(err).WithField("photoID", post).Error("can't delete image")
+		ctx.Logger.WithError(err).WithField("photoID", photoId).Error("can't delete image")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

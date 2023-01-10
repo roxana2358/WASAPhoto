@@ -1,7 +1,7 @@
 package database
 
 /**
-* Removes like from photo and returns an error if any occured.
+* Removes like from database; returns error if the request is unsuccessfull.
  */
 func (db *appdbimpl) DeleteLike(userID uint64, postID uint64) error {
 	// unlike photo

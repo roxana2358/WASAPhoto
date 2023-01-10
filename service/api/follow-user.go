@@ -51,7 +51,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	// proceed following the user
 	err = rt.db.CreateFollow(token, followId)
 	if errors.Is(err, database.ErrUserNotFound) || errors.Is(err, database.ErrUserBanned) {
-		// the "follow" user does not exist or token was banned
+		// one of the users does not exist or the user was banned
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {

@@ -223,7 +223,7 @@ paths:
       tags: ["User"]
       summary: Gets user's profile
       description: |-
-        If the user exists, it returns the profile; otherwise it returns an error.
+        If the user exists, it returns the profile.
       operationId: getUserProfile
       responses:
         '200': 
@@ -237,8 +237,8 @@ paths:
         '500': { $ref: '#/components/responses/InternalServerError' }
 
   /users/{userID}/stream:
-    summary: List of users
-    description: This is the list of all users.
+    parameters:
+      - $ref: "#/components/parameters/userID"
     get:
       tags: ["User"]
       summary: Gets user's stream.
@@ -348,7 +348,7 @@ paths:
     get:
       tags: ["Photo"]
       summary: Gets the raw image
-      description: Returns the image requested
+      description: Gets the image requested
       operationId: getImage
       responses:
         '200':
@@ -383,7 +383,7 @@ paths:
     post:
       tags: ["Photo"]
       summary: Adds a comment
-      description: Adds a comment to photo.
+      description: Adds a comment to the photo.
       operationId: commentPhoto
       requestBody:
         description: Content of the comment.
@@ -414,7 +414,7 @@ paths:
     delete:
       tags: ["Photo"]
       summary: Deletes a comment
-      description: Removes a comment from photo.
+      description: Removes a comment from the photo.
       operationId: uncommentPhoto
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
@@ -430,7 +430,7 @@ paths:
     put:
       tags: ["Photo"]
       summary: Adds a like to a photo
-      description: Adds a like to the photo
+      description: Adds a like to the photo.
       operationId: likePhoto
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
@@ -441,7 +441,7 @@ paths:
     delete:
       tags: ["Photo"]
       summary: Removes a like
-      description: Removes a like from photo
+      description: Removes a like from the photo.
       operationId: unlikePhoto
       responses:
         '204': { $ref: '#/components/responses/NoContent' }

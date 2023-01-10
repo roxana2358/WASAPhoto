@@ -11,32 +11,32 @@ import (
 var ErrUnauthorized = errors.New("user not in database")
 
 type Username struct {
-	Username string //`json:"username"`
+	Username string `json:"username"`
 }
 
 type ID struct {
-	Id uint64 //`json:"ID"`
+	Id uint64 `json:"ID"`
 }
 
 type Comment struct {
-	Comment string //`json:"comment"`
+	Comment string `json:"comment"`
 }
 
 type Userprofile struct {
-	Username       string   //`json:"username"`
-	Photos         []uint64 //`json:"photos"`
-	NumberOfPhotos int      //`json:"numberOfPhotos"`
-	Followers      []string //`json:"followers"`
-	Following      []string //`json:"following"`
+	Username       string   `json:"username"`
+	Photos         []uint64 `json:"photos"`
+	NumberOfPhotos int      `json:"numberOfPhotos"`
+	Followers      []string `json:"followers"`
+	Following      []string `json:"following"`
 }
 
 type Userpost struct {
-	Username string //`json:"username"`
-	PostID   uint64 //`json:"photo"`
-	Date     string //`json:"date"`
-	Time     string //`json:"time"`
-	Likes    int    //`json:"likes"`
-	Comments int    //`json:"comments"`
+	Username string `json:"username"`
+	PostID   uint64 `json:"photo"`
+	Date     string `json:"date"`
+	Time     string `json:"time"`
+	Likes    int    `json:"likes"`
+	Comments int    `json:"comments"`
 }
 
 /**

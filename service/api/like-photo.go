@@ -11,7 +11,7 @@ import (
 )
 
 /**
-* Adds a like to a photo.
+* Adds a like to the photo.
  */
 func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// token extraction
@@ -26,14 +26,6 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	// The ID of the photo is a 64-bit unsigned integer
-	postID, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
-	if err != nil {
-		// The value was not uint64, reject the action indicating an error on the client side
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
 	// The user ID in the path is a 64-bit unsigned integer
 	userID, err := strconv.ParseUint(ps.ByName("userID"), 10, 64)
 	if err != nil {
@@ -45,6 +37,14 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 	// check if user is authorized for the action
 	if !checkAuth(token, userID) {
 		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	// The ID of the photo is a 64-bit unsigned integer
+	postID, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
+	if err != nil {
+		// The value was not uint64, reject the action indicating an error on the client side
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 

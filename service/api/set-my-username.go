@@ -12,7 +12,8 @@ import (
 )
 
 /**
-* Updates username.
+* If the username is available it updates the old one; otherwise it notifies the user that
+* the username is already used.
  */
 func (rt *_router) setMyUsername(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// token extraction

@@ -1,20 +1,20 @@
 package database
 
 /**
-* Returns user's stream.
+* Gets the stream with 30 post from following in reverse chronological order.
  */
 func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 	var userStream []Userpost
 	var userPost Userpost
 
-	// request 50 posts
+	// request 30 posts
 	rows, err := db.c.Query(`SELECT USERS.USERNAME, POSTS.POST-ID, POSTS.DATE, POSTS.TIME
 							FROM FOLLOWING 
 							INNER JOIN POSTS ON FOLLOWING.FOLLOWING-ID=POSTS.USER-ID
 							INNER JOIN USERS ON FOLLOWING.FOLLOWING-ID=USERS.ID
 							WHERE FOLLOWING.USER-ID=?
-							LIMIT 50
-							ORDERBY DATE,TIME`, userID)
+							LIMIT 30
+							ORDERBY DATE DESC,TIME DESC`, userID)
 	if err != nil {
 		return userStream, err
 	}

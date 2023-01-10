@@ -22,15 +22,11 @@ func (db *appdbimpl) GetImage(imageId uint64) (image.Image, error) {
 		return nil, err
 	}
 	defer imgFile.Close()
-	if err != nil {
-		return nil, ErrFileNotFound
-	}
 	// decode
 	img, _, err := image.Decode(imgFile)
 	if err != nil {
-		return nil, ErrDecode
+		return nil, err
 	}
 
-	// return image
 	return img, nil
 }

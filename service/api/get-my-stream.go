@@ -11,9 +11,10 @@ import (
 )
 
 /**
-* Gets user's stream.
+* It returns a stream with following users' photos and respective information in reverse
+* chronological order.
  */
-func (rt *_router) getUserStream(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// token extraction
 	token, err := getHeaderToken(r)
 	if errors.Is(err, ErrUnauthorized) {
@@ -34,13 +35,13 @@ func (rt *_router) getUserStream(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	// check if token is allowed to request userID's stream
+	// check if the user that requested the action is authorized
 	if !checkAuth(token, userID) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	dbUserStream, err := rt.db.GetUserStream(userID) // list of userPosts
+	dbUserStream, err := rt.db.GetUserStream(userID) // list of userPost in db format
 	// check errors
 	if err != nil {
 		// error on our side: log the error and send a 500 to the user

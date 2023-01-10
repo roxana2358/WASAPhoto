@@ -12,7 +12,7 @@ import (
 )
 
 /**
-* Gets user's profile.
+* If the user exists, it returns the profile.
  */
 func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// token extraction

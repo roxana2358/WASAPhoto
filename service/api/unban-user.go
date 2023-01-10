@@ -48,10 +48,10 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	// proceed unfollowing the user
-	err = rt.db.DeleteFollow(token, unbanId)
+	// proceed unbanning the user
+	err = rt.db.DeleteBan(token, unbanId)
 	if errors.Is(err, database.ErrBanNotFound) {
-		// the "unban" user does not exist or token wasn't following the user
+		// one of the users does not exist or the user was not banned
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {

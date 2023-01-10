@@ -9,7 +9,8 @@ import (
 )
 
 /**
-* Logs in the user.
+* If the user does not exist, it will be created, and an identifier is returned. If the user exists,
+* the user identifier is returned.
  */
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
@@ -23,7 +24,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	}
 
 	id, err := rt.db.GetUserId(username.Username)
-	// user not in databe, must be added
+	// if an error occurred the user is not in database, it must be added
 	if err != nil {
 		id, err = rt.db.CreateUser(username.Username)
 		if err != nil {
