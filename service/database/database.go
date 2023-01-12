@@ -44,7 +44,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
-	_, err := db.Exec("PRAGMA foreign_keys = ON; ")
+	_, err := db.Exec("PRAGMA foreign_keys = ON;")
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		sqlStmt := `CREATE TABLE IF NOT EXISTS Users (
 			Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 			Username TEXT PRIMARY KEY
-			);`
+);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)

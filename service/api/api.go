@@ -38,10 +38,10 @@ package api
 
 import (
 	"errors"
-	"wasa-photo/service/database"
 	"github.com/julienschmidt/httprouter"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"wasa-photo/service/database"
 )
 
 // Config is used to provide dependencies and configuration to the New function.
