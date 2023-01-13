@@ -57,7 +57,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE IF NOT EXISTS Users (
 			Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
-			Username TEXT PRIMARY KEY
+			Username TEXT UNIQUE
 );`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
