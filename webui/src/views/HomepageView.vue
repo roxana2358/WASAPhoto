@@ -1,5 +1,5 @@
 <script>
-import token from 'login'
+//import token from 'login'
 export default {
 	data: function() {
 		return {
@@ -13,7 +13,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let res = await this.$axios.get("/users/" + token + "/stream", { headers: { 'Authorization': token } });
+				let res = await this.$axios.get("/users/" + 1 + "/stream", { headers: { 'Authorization': 1 } });
 				this.stream = res.data;
 			} catch (e) {
 				this.errormsg = e.toString();
