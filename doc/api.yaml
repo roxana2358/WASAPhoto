@@ -4,6 +4,8 @@ info:
   description: |
     This is an API of an app/web page that allows the user to keep in touch with their friends by sharing, liking and commenting photos of special moments.
   version: 1.0.0
+servers:
+  - url: http://localhost:3000
   
 components:
   schemas:
