@@ -1,5 +1,7 @@
 package database
 
+import "sort"
+
 /**
 * Gets the stream with 30 post from following in reverse chronological order.
  */
@@ -7,14 +9,12 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 	var userStream []Userpost
 	var userPost Userpost
 
-	// request 30 posts
+	// request posts
 	rows, err := db.c.Query(`SELECT Users.Username, Posts.PostId, Posts.Date, Posts.Time
 							FROM Following 
 							INNER JOIN Posts ON Following.FollowingID=Posts.UserId
 							INNER JOIN Users ON Following.FollowingID=Users.Id
-							WHERE Following.UserId=?
-							LIMIT 30
-							ORDERBY Date DESC,Time DESC`, userID)
+							WHERE Following.UserId=?`, userID)
 	if err != nil {
 		return userStream, err
 	}
@@ -54,5 +54,14 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 	if err = rows.Err(); err != nil {
 		return userStream, err
 	}
-	return userStream, nil
+
+	// sort and select
+	sort.Sort(postList(userStream))
+	var finalList []Userpost
+	if len(userStream) > 30 {
+		finalList = userStream[:30]
+	} else {
+		finalList = userStream[:]
+	}
+	return finalList, nil
 }

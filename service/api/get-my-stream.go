@@ -45,7 +45,7 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httpro
 	// check errors
 	if err != nil {
 		// error on our side: log the error and send a 500 to the user
-		ctx.Logger.WithError(err).Error("can't extract token")
+		ctx.Logger.WithField("user", userID).WithError(err).Error("can't get stream")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -1,11 +1,11 @@
 <script>
-//import token from 'login'
 export default {
 	data: function() {
 		return {
 			errormsg: null,
 			loading: false,
 			stream: null,
+			token: null,
 		}
 	},
 	methods: {
@@ -13,8 +13,14 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let res = await this.$axios.get("/users/" + 1 + "/stream", { headers: { 'Authorization': 1 } });
+				this.token = localStorage.getItem('token')
+				let res = await this.$axios.get("/users/" + this.token + "/stream", { 
+					headers: { 
+						Authorization: this.token 
+					} 
+				});
 				this.stream = res.data;
+
 			} catch (e) {
 				this.errormsg = e.toString();
 			}

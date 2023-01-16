@@ -28,3 +28,17 @@ type Userpost struct {
 	Likes    int
 	Comments int
 }
+
+type postList []Userpost
+
+func (p postList) Len() int {
+	return len(p)
+}
+
+func (p postList) Less(i, j int) bool {
+	return p[i].Date > p[j].Date || p[i].Time > p[j].Time
+}
+
+func (p postList) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
+}

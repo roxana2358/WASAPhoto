@@ -1,15 +1,16 @@
 <script>
 export default {
-	name: 'login',
 	data: function() {
 		return {
 			errormsg: null,
 			loading: false,
 			username: null,
-			token: null,
 		}
 	},
 	methods: {
+		clearData: async function() {
+			localStorage.clear
+		},
 		doLogin: async function () {
 			this.loading = true;
 			this.errormsg = null;
@@ -17,15 +18,17 @@ export default {
 				let res = await this.$axios.post("/session", {
 					username: this.username
 				});
-				token = res.data
-
+				localStorage.clear
+				localStorage.setItem('token', res.data.ID)
 				this.$router.replace("/home");
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
 			this.loading = false;
 		}
-
+	},
+	mounted() {
+		this.clearData()
 	}
 }
 </script>
