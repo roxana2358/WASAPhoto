@@ -10,10 +10,10 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 	var userPost Userpost
 
 	// request posts
-	rows, err := db.c.Query(`SELECT Users.Username, Posts.PostId, Posts.Date, Posts.Time
+	rows, err := db.c.Query(`SELECT Users.Id, Users.Username, Posts.PostId, Posts.Date, Posts.Time
 							FROM Following 
-							INNER JOIN Posts ON Following.FollowingID=Posts.UserId
-							INNER JOIN Users ON Following.FollowingID=Users.Id
+							INNER JOIN Posts ON Following.FollowingId=Posts.UserId
+							INNER JOIN Users ON Following.FollowingId=Users.Id
 							WHERE Following.UserId=?`, userID)
 	if err != nil {
 		return userStream, err
@@ -22,7 +22,7 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 
 	// Here we read the resultset and we build the list to be put in userStream
 	for rows.Next() {
-		err = rows.Scan(&userPost.Username, &userPost.PostID, &userPost.Date, &userPost.Time)
+		err = rows.Scan(&userPost.UserID, &userPost.Username, &userPost.PostID, &userPost.Date, &userPost.Time)
 		if err != nil {
 			return userStream, err
 		}

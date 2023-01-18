@@ -30,19 +30,19 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 	var photoIds []uint64
 	// Here we read the resultset and we build the list to be put in userProfile
 	for rows.Next() {
-		var photoID uint64
-		err = rows.Scan(&photoID)
+		var postID uint64
+		err = rows.Scan(&postID)
 		if err != nil {
 			return userProfile, err
 		}
-		photoIds = append(photoIds, photoID)
+		photoIds = append(photoIds, postID)
 	}
 	if err = rows.Err(); err != nil {
 		return userProfile, err
 	}
 
 	// 3) find following
-	rows, err = db.c.Query(`SELECT FollowingID FROM Following WHERE UserId=?`, profileID)
+	rows, err = db.c.Query(`SELECT FollowingId FROM Following WHERE UserId=?`, profileID)
 	if err != nil {
 		return userProfile, err
 	}
@@ -69,7 +69,7 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 	}
 
 	// 4) find followers
-	rows, err = db.c.Query(`SELECT UserId FROM Following WHERE FollowingID=?`, profileID)
+	rows, err = db.c.Query(`SELECT UserId FROM Following WHERE FollowingId=?`, profileID)
 	if err != nil {
 		return userProfile, err
 	}
@@ -95,12 +95,41 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 		return userProfile, err
 	}
 
-	// 5) compose userProfile
+	// 5) find banned users
+	rows, err = db.c.Query(`SELECT BannedId FROM Ban WHERE UserId=?`, userID)
+	if err != nil {
+		return userProfile, err
+	}
+	defer func() { _ = rows.Close() }()
+	var banned []string
+	var bannedID uint64
+	var ban string
+	// Here we read the resultset and we build the list to be put in userProfile
+	for rows.Next() {
+		err = rows.Scan(&bannedID)
+		if err != nil {
+			return userProfile, err
+		}
+
+		row = db.c.QueryRow(`SELECT Username FROM Users WHERE Id=?`, bannedID)
+		if row.Scan(&ban) != nil {
+			return userProfile, err
+		}
+
+		banned = append(banned, ban)
+	}
+	if err = rows.Err(); err != nil {
+		return userProfile, err
+	}
+
+	// 6) compose userProfile
+	userProfile.Id = profileID
 	userProfile.Username = username
 	userProfile.Photos = photoIds
 	userProfile.NumberOfPhotos = len(photoIds)
 	userProfile.Following = following
 	userProfile.Followers = followers
+	userProfile.Banned = banned
 
 	return userProfile, nil
 }

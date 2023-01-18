@@ -20,6 +20,12 @@ func (db *appdbimpl) CreateLike(userID uint64, postID uint64) error {
 		return ErrUserBanned
 	}
 
+	var id uint64
+	// check if already in database
+	row = db.c.QueryRow(`SELECT UserId FROM Likes WHERE UserId=? AND PostId=?`, userID, postID)
+	if row.Scan(&id) == nil {
+		return nil
+	}
 	// like photo
 	_, err := db.c.Exec(`INSERT INTO Likes (PostId, UserId) VALUES (?, ?)`, postID, userID)
 	if err != nil {

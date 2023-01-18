@@ -27,7 +27,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// The ID of the photo is a 64-bit unsigned integer
-	postID, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
+	postID, err := strconv.ParseUint(ps.ByName("postID"), 10, 64)
 	if err != nil {
 		// The value was not uint64, reject the action indicating an error on the client side
 		w.WriteHeader(http.StatusBadRequest)

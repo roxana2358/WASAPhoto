@@ -1,10 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
-	"image/png"
 	"net/http"
-	"strconv"
 	"wasa-photo/service/api/reqcontext"
 	"wasa-photo/service/database"
 
@@ -12,10 +11,10 @@ import (
 )
 
 /**
-* Gets the image requested.
+* If the user exists, it returns the profile.
  */
-func (rt *_router) getImage(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// token extraction; real token not necessary because if we received the postID user is allowed to request it
+func (rt *_router) getUserId(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	// token extraction
 	_, err := getHeaderToken(r)
 	if errors.Is(err, ErrUnauthorized) {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -27,27 +26,27 @@ func (rt *_router) getImage(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	// The ID of the photo is a 64-bit unsigned integer
-	postId, err := strconv.ParseUint(ps.ByName("postID"), 10, 64)
-	if err != nil {
-		// The value was not uint64, reject the action indicating an error on the client side
+	// The user ID in the path is a 64-bit unsigned integer
+	if !r.URL.Query().Has("username") {
+		// username is missing
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	username := r.URL.Query().Get("username")
 
-	// request the photo
-	img, err := rt.db.GetImage(postId)
-	if errors.Is(err, database.ErrFileNotFound) {
+	id, err := rt.db.GetUserId(username)
+	// check errors
+	if errors.Is(err, database.ErrUserNotFound) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
 		// error on our side: log the error and send a 500 to the user
-		ctx.Logger.WithError(err).Error("can't decode image")
+		ctx.Logger.WithError(err).WithField("username", username).Error("can't get user id")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	// send output to user
-	w.Header().Set("Content-Type", "image/png")
-	_ = png.Encode(w, img)
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(id)
 }

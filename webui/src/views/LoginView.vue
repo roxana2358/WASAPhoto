@@ -9,7 +9,7 @@ export default {
 	},
 	methods: {
 		clearData: async function() {
-			localStorage.clear
+			localStorage.clear();
 		},
 		doLogin: async function () {
 			this.loading = true;
@@ -18,8 +18,8 @@ export default {
 				let res = await this.$axios.post("/session", {
 					username: this.username
 				});
-				localStorage.clear
-				localStorage.setItem('token', res.data.ID)
+				localStorage.setItem('username', this.username)
+				localStorage.setItem('token', res.data.id)
 				this.$router.replace("/home");
 			} catch (e) {
 				this.errormsg = e.toString();
@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-	<div>
+	<div style="position:absolute; left:730px; top: 150px; width:400px">
 		<div
 			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h1 class="h2">Login page</h1>
@@ -48,7 +48,7 @@ export default {
 		</div>
 
 		<div>
-			<button v-if="!loading" type="button" class="btn btn-primary" @click="doLogin">
+			<button style="width:400px" v-if="!loading" type="button" class="btn btn-primary" @click="doLogin">
 				Login
 			</button>
 			<LoadingSpinner v-if="loading"></LoadingSpinner>

@@ -65,14 +65,15 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	// Following (UserId FOLLOWES FollowingID)
+	// Following (UserId FOLLOWES FollowingId)
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Following';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE IF NOT EXISTS Following (
 			UserId INTEGER NOT NULL, 
-			FollowingID INTEGER NOT NULL,
+			FollowingId INTEGER NOT NULL,
 			FOREIGN KEY(UserId) REFERENCES Users(Id),
-			FOREIGN KEY(FollowingID) REFERENCES Users(Id)
+			FOREIGN KEY(FollowingId) REFERENCES Users(Id),
+			PRIMARY KEY(UserId, FollowingId)
 );`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -87,7 +88,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 			UserId INTEGER NOT NULL, 
 			BannedId INTEGER NOT NULL,
 			FOREIGN KEY(UserId) REFERENCES Users(Id),
-			FOREIGN KEY(BannedId) REFERENCES Users(Id)
+			FOREIGN KEY(BannedId) REFERENCES Users(Id),
+			PRIMARY KEY(UserId, BannedId)
 );`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
@@ -119,7 +121,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 			PostId INTEGER NOT NULL,
 			UserId INTEGER NOT NULL,
 			FOREIGN KEY(PostId) REFERENCES Posts(PostId),
-			FOREIGN KEY(UserId) REFERENCES Users(Id)
+			FOREIGN KEY(UserId) REFERENCES Users(Id),
+			PRIMARY KEY(PostId, UserId)
 );`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {

@@ -11,16 +11,20 @@ var ErrPostNotFound = errors.New("post not in database")
 var ErrFileNotFound = errors.New("file not found in database")
 var ErrUnauthorized = errors.New("the user is not authorized for this action")
 var ErrCommentNotFound = errors.New("the comment is not in database")
+var ErrCouldNotFollow = errors.New("you should unban the user before following")
 
 type Userprofile struct {
+	Id             uint64
 	Username       string
 	Photos         []uint64
 	NumberOfPhotos int
 	Followers      []string
 	Following      []string
+	Banned         []string
 }
 
 type Userpost struct {
+	UserID   uint64
 	Username string
 	PostID   uint64
 	Date     string

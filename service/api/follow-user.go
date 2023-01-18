@@ -54,6 +54,9 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 		// one of the users does not exist or the user was banned
 		w.WriteHeader(http.StatusNotFound)
 		return
+	} else if errors.Is(err, database.ErrCouldNotFollow) {
+		w.WriteHeader(http.StatusConflict)
+		return
 	} else if err != nil {
 		// error on our side: log the error and send a 500 to the user
 		ctx.Logger.WithError(err).Error("can't follow the user")

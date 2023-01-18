@@ -14,6 +14,7 @@ components:
       description: This represents a single user profile.
       type: object
       properties:
+        id: { $ref: "#/components/schemas/ID" }
         username: { $ref: "#/components/schemas/username" }
         photos:
           description: User's photos IDs.
@@ -37,13 +38,20 @@ components:
           items: { $ref: "#/components/schemas/username" }
           minItems: 0
           maxItems: 10000
+        banned:
+          description: List of banned users.
+          type: array
+          items: { $ref: "#/components/schemas/username" }
+          minItems: 0
+          maxItems: 10000
     userPost:
       title: User post
       description: This represents a sigle user post.
       type: object
-      properties:  
+      properties:
+        userId: { $ref: "#/components/schemas/ID" }
         username: { $ref: "#/components/schemas/username" }        
-        photo: { $ref: "#/components/schemas/image" }
+        postId: { $ref: "#/components/schemas/image" }
         date:
           description: Date on which the photo was posted.
           type: string
@@ -110,8 +118,8 @@ components:
       description: Unique user identifier
       schema: { $ref: "#/components/schemas/ID"}
       required: true
-    photoID:
-      name: photoID
+    postID:
+      name: postID
       in: path
       description: Unique photo identifier
       schema: { $ref: "#/components/schemas/ID"}
@@ -199,6 +207,31 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '500': { $ref: '#/components/responses/InternalServerError' }
   
+  /users:
+    summary: List of users
+    description: This is the list of all users
+    get:
+      tags: ["User"]
+      summary: Gets user's identifier
+      description: If the user exists, it returns the id
+      operationId: getUserId
+      parameters:
+      - name: username
+        in: path
+        description: User's name
+        schema: { $ref: "#/components/schemas/username"}
+        required: true
+      responses:
+        '200': 
+          description: The resource has been fetched and transmitted in the message body.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ID" }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
   /users/{userID}:
     parameters:
       - $ref: "#/components/parameters/userID"
@@ -276,6 +309,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
         '500': { $ref: '#/components/responses/InternalServerError' }
     delete:
       tags: ["Following"]
@@ -316,7 +350,7 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalServerError' }
   
-  /photos/:
+  /posts/:
     summary: List of photos
     description: This is the list of all photos.
     post:
@@ -344,9 +378,9 @@ paths:
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '500': { $ref: '#/components/responses/InternalServerError' }
 
-  /photos/{photoID}:
+  /posts/{postID}:
     parameters:
-      - $ref: "#/components/parameters/photoID"
+      - $ref: "#/components/parameters/postID"
     get:
       tags: ["Photo"]
       summary: Gets the raw image
@@ -379,9 +413,9 @@ paths:
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: '#/components/responses/InternalServerError' }
 
-  /photos/{photoID}/comments:
+  /posts/{postID}/comments:
     parameters:
-      - $ref: "#/components/parameters/photoID"
+      - $ref: "#/components/parameters/postID"
     post:
       tags: ["Photo"]
       summary: Adds a comment
@@ -409,9 +443,9 @@ paths:
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: '#/components/responses/InternalServerError' }
     
-  /photos/{photoID}/comments/{commentID}:
+  /posts/{postID}/comments/{commentID}:
     parameters:
-      - $ref: "#/components/parameters/photoID"
+      - $ref: "#/components/parameters/postID"
       - $ref: "#/components/parameters/commentID"
     delete:
       tags: ["Photo"]
@@ -425,9 +459,9 @@ paths:
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: '#/components/responses/InternalServerError' }
   
-  /photos/{photoID}/likes/{userID}:
+  /posts/{postID}/likes/{userID}:
     parameters:
-      - $ref: "#/components/parameters/photoID"
+      - $ref: "#/components/parameters/postID"
       - $ref: "#/components/parameters/userID"
     put:
       tags: ["Photo"]

@@ -15,7 +15,7 @@ type Username struct {
 }
 
 type ID struct {
-	Id uint64 `json:"ID"`
+	Id uint64 `json:"id"`
 }
 
 type Comment struct {
@@ -23,14 +23,17 @@ type Comment struct {
 }
 
 type Userprofile struct {
+	Id             uint64   `json:"id"`
 	Username       string   `json:"username"`
 	Photos         []uint64 `json:"photos"`
 	NumberOfPhotos int      `json:"numberOfPhotos"`
 	Followers      []string `json:"followers"`
 	Following      []string `json:"following"`
+	Banned         []string `json:"banned"`
 }
 
 type Userpost struct {
+	UserID   uint64 `json:"id"`
 	Username string `json:"username"`
 	PostID   uint64 `json:"photo"`
 	Date     string `json:"date"`
@@ -67,17 +70,20 @@ func checkAuth(srcUser uint64, dstUser uint64) bool {
 * UserProfileFromDatabase populates the struct with data from the database, overwriting all values.
  */
 func (u *Userprofile) UserProfileFromDatabase(userprofile database.Userprofile) {
+	u.Id = userprofile.Id
 	u.Username = userprofile.Username
 	u.Photos = userprofile.Photos
 	u.NumberOfPhotos = userprofile.NumberOfPhotos
 	u.Followers = userprofile.Followers
 	u.Following = userprofile.Following
+	u.Banned = userprofile.Banned
 }
 
 /**
 * UserPostFromDatabase populates the struct with data from the database, overwriting all values.
  */
 func (u *Userpost) UserPostFromDatabase(userpost database.Userpost) {
+	u.UserID = userpost.UserID
 	u.Username = userpost.Username
 	u.PostID = userpost.PostID
 	u.Date = userpost.Date

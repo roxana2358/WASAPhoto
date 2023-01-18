@@ -13,7 +13,6 @@ import (
 * the user identifier is returned.
  */
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-
 	// read the username from the request body
 	var username Username
 	err := json.NewDecoder(r.Body).Decode(&username)

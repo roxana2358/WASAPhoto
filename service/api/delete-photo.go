@@ -27,7 +27,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// The ID of the photo is a 64-bit unsigned integer
-	photoId, err := strconv.ParseUint(ps.ByName("photoID"), 10, 64)
+	photoId, err := strconv.ParseUint(ps.ByName("postID"), 10, 64)
 	if err != nil {
 		// The value was not uint64, reject the action indicating an error on the client side
 		w.WriteHeader(http.StatusBadRequest)
@@ -44,7 +44,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	} else if err != nil {
 		// error on our side: log the error and send a 500 to the user
-		ctx.Logger.WithError(err).WithField("photoID", photoId).Error("can't delete image")
+		ctx.Logger.WithError(err).WithField("postID", photoId).Error("can't delete image")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
