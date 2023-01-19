@@ -24,7 +24,7 @@ func (db *appdbimpl) CreatePhoto(userID uint64, time string, date string, image 
 	}
 
 	// save photo locally and add info to db
-	fileName := "./photos/" + strconv.FormatInt(lastInsertID, 10) + ".png"
+	fileName := "photos/" + strconv.FormatInt(lastInsertID, 10) + ".png"
 	imgFile, err := os.Create(fileName)
 	if err != nil {
 		return 0, err

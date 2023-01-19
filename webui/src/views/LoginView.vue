@@ -1,4 +1,6 @@
 <script>
+import { resolveDirective } from 'vue';
+
 export default {
 	data: function() {
 		return {
@@ -8,13 +10,14 @@ export default {
 		}
 	},
 	methods: {
-		clearData: async function() {
-			localStorage.clear();
-		},
 		doLogin: async function () {
 			this.loading = true;
 			this.errormsg = null;
 			try {
+				if (this.username == null || this.username == "") {
+					this.errormsg = "Your credentials are not valid!"
+					return
+				}
 				let res = await this.$axios.post("/session", {
 					username: this.username
 				});
@@ -25,10 +28,8 @@ export default {
 				this.errormsg = e.toString();
 			}
 			this.loading = false;
+
 		}
-	},
-	mounted() {
-		this.clearData()
 	}
 }
 </script>
@@ -48,7 +49,7 @@ export default {
 		</div>
 
 		<div>
-			<button style="width:400px" v-if="!loading" type="button" class="btn btn-primary" @click="doLogin">
+			<button style="width:400px" type="button" class="btn btn-primary" @click="doLogin">
 				Login
 			</button>
 			<LoadingSpinner v-if="loading"></LoadingSpinner>

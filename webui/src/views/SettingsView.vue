@@ -1,5 +1,4 @@
 <script>
-import SideMenu from '../components/SideMenu.vue'
 export default {
 	data: function() {
 		return {
@@ -29,8 +28,7 @@ export default {
 			}
 			this.loading = false;
 		}
-	},
-	components: { SideMenu }
+	}
 }
 </script>
 

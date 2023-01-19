@@ -16,7 +16,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/users/:userID/following/:followingID", rt.wrap(rt.unfollowUser))
 	rt.router.PUT("/users/:userID/ban/:bannedID", rt.wrap(rt.banUser))
 	rt.router.DELETE("/users/:userID/ban/:bannedID", rt.wrap(rt.unbanUser))
-	rt.router.POST("/posts/", rt.wrap(rt.uploadPhoto))
+	rt.router.POST("/posts", rt.wrap(rt.uploadPhoto))
 	rt.router.GET("/posts/:postID", rt.wrap(rt.getImage))
 	rt.router.DELETE("/posts/:postID", rt.wrap(rt.deletePhoto))
 	rt.router.POST("/posts/:postID/comments", rt.wrap(rt.commentPhoto))

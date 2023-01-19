@@ -1,16 +1,38 @@
 <script>
-import SideMenu from '../components/SideMenu.vue'
 export default {
 	data: function() {
 		return {
 			errormsg: null,
 			loading: false,
 			user: null,
+			photos: [],
+			immagine: undefined,
 		}
 	},
 	methods: {
 		changeUsernamePage: async function() {
 			this.$router.push("/settings");
+		},
+		getPhotos: async function() {
+			this.loading = true;
+			this.errormsg = null;
+			try {
+				for (let i = 0; i<this.user.photos.length; i++ ) {
+					this.$axios.get(`posts/${this.user.photos[i]}`, {
+							headers: {
+								Authorization: localStorage.getItem("token"),
+								Accept: 'image/png'
+							}
+					}).then( (res) => {
+						// TO-DO
+						this.photos[i] = res.data;
+					});
+				};
+				this.immagine = this.photos[0];
+			} catch (e) {
+				this.errormsg = e.toString();
+			}
+			this.loading = false;
 		},
 		async refresh() {
 			this.loading = true;
@@ -22,6 +44,7 @@ export default {
 					}
 				});
 				this.user = res.data;
+				this.getPhotos();
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -30,8 +53,7 @@ export default {
 	},
 	mounted() {
 		this.refresh();
-	},
-	components: { SideMenu }
+	}
 }
 </script>
 
@@ -69,9 +91,16 @@ export default {
 				<p class="card-text">
 					Number of photos: {{ this.user.numberOfPhotos }}<br />
 					Followers: {{ this.user.followers }}<br />
-					Following: {{ this.user.following }}
+					Following: {{ this.user.following }}<br />
 				</p>
 			</div>
+		</div>
+
+		<div>
+            <div>
+				<label for="description" class="form-label">{{ photos }}</label>
+				<img :src="immagine" alt="ph">
+            </div>
 		</div>
 
 	</div>

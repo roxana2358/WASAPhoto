@@ -6,10 +6,16 @@ export default {
 		}
 	},
     methods: {
+		clearData: async function() {
+			localStorage.clear();
+		},
 		next: async function() {
 			this.$router.replace("/login")
 		}
-    }
+    },
+	mounted() {
+		this.clearData()
+	}
 }
 </script>
 
@@ -20,7 +26,7 @@ export default {
 		</div>
 
 		<div>
-			<img src="../../public/logo.png" alt="logo">
+			<img src="/logo.png" alt="logo">
 		</div>
 
 		<div>

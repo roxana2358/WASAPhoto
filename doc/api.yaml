@@ -217,7 +217,7 @@ paths:
       operationId: getUserId
       parameters:
       - name: username
-        in: path
+        in: query
         description: User's name
         schema: { $ref: "#/components/schemas/username"}
         required: true
@@ -350,7 +350,7 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalServerError' }
   
-  /posts/:
+  /posts:
     summary: List of photos
     description: This is the list of all photos.
     post:

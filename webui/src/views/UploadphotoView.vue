@@ -1,16 +1,43 @@
 <script>
-import SideMenu from '../components/SideMenu.vue'
 export default {
     data: function () {
         return {
             errormsg: null,
-            loading: false
+            loading: false,
+            image: undefined,
+            previewImage: undefined,
         };
     },
-    methods: {},
-    mounted() {
+    methods: {
+        selectImage: async function() {
+            this.loading = true;
+			this.errormsg = null;
+			try {
+                this.image = this.$refs.file.files.item(0);
+                this.previewImage = URL.createObjectURL(this.image);
+            } catch (e) {
+				this.errormsg = e.toString();
+			}
+			this.loading = false;
+        },
+        uploadImage: async function() {
+            this.loading = true;
+			this.errormsg = null;
+			try {
+				await this.$axios.post("/posts", this.image, {
+					headers: {
+						Authorization: localStorage.getItem("token"),
+                        'Content-Type': 'image/png'
+					}
+				});
+			} catch (e) {
+				this.errormsg = e.toString();
+			}
+			this.loading = false;
+        }
     },
-    components: { SideMenu }
+    mounted() {
+    }
 }
 </script>
 
@@ -25,6 +52,25 @@ export default {
 
 		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 		<LoadingSpinner v-if="loading"></LoadingSpinner>
+
+        <div class="mb-3">
+			<label for="description" class="form-label">Insert your photo</label>
+			<input type="file" accept="image/png" ref="file" @change="selectImage">
+		</div>
+
+		<div>
+			<button style="width:200px" v-if="!loading && previewImage!=undefined" type="button" class="btn btn-success" @click="uploadImage">
+				Upload!
+			</button>
+			<LoadingSpinner v-if="loading"></LoadingSpinner>
+		</div>
+
+        <div v-if="previewImage">
+            <div>
+                <img class="preview my-3" :src="previewImage" alt="" />
+             </div>
+             <label for="description" class="form-label">{{ this.$refs.file.files }}</label>
+        </div>
 	</div>
 
 </template>
