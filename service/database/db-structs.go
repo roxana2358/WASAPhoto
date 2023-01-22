@@ -29,8 +29,15 @@ type Userpost struct {
 	PostID   uint64
 	Date     string
 	Time     string
-	Likes    int
-	Comments int
+	Likes    []uint64
+	Comments []CommentOBJ
+}
+
+type CommentOBJ struct {
+	Username  string
+	UserID    uint64
+	Comment   string
+	CommentId uint64
 }
 
 type postList []Userpost

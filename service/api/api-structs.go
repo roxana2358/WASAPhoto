@@ -33,13 +33,20 @@ type Userprofile struct {
 }
 
 type Userpost struct {
-	UserID   uint64 `json:"id"`
-	Username string `json:"username"`
-	PostID   uint64 `json:"photo"`
-	Date     string `json:"date"`
-	Time     string `json:"time"`
-	Likes    int    `json:"likes"`
-	Comments int    `json:"comments"`
+	UserID   uint64       `json:"id"`
+	Username string       `json:"username"`
+	PostID   uint64       `json:"photo"`
+	Date     string       `json:"date"`
+	Time     string       `json:"time"`
+	Likes    []uint64     `json:"likes"`
+	Comments []CommentOBJ `json:"comments"`
+}
+
+type CommentOBJ struct {
+	Username  string `json:"username"`
+	UserID    uint64 `json:"userId"`
+	Comment   string `json:"comment"`
+	CommentId uint64 `json:"commentId"`
 }
 
 /**
@@ -89,5 +96,19 @@ func (u *Userpost) UserPostFromDatabase(userpost database.Userpost) {
 	u.Date = userpost.Date
 	u.Time = userpost.Time
 	u.Likes = userpost.Likes
-	u.Comments = userpost.Comments
+	for i := 0; i < len(userpost.Comments); i++ {
+		var com CommentOBJ
+		com.CommentFromDatabase(userpost.Comments[i])
+		u.Comments = append(u.Comments, com)
+	}
+}
+
+/**
+* CommentFromDatabase populates the struct with data from the database, overwriting all values.
+ */
+func (c *CommentOBJ) CommentFromDatabase(comment database.CommentOBJ) {
+	c.Username = comment.Username
+	c.UserID = comment.UserID
+	c.Comment = comment.Comment
+	c.CommentId = comment.CommentId
 }

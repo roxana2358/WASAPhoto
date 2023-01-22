@@ -21,7 +21,7 @@ type AppDatabase interface {
 	DeleteFollow(user uint64, unfollow uint64) error
 	CreateBan(user uint64, ban uint64) error
 	DeleteBan(user uint64, unban uint64) error
-	GetNextPostId() uint64
+	GetNextPostId() (uint64, error)
 	CreatePhoto(userID uint64, postId uint64, time string, date string, fileName string) (uint64, error)
 	GetImage(imageId uint64) (string, error)
 	DeletePhoto(user uint64, post uint64) error

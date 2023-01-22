@@ -35,7 +35,13 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	var date string = parsed_time[0]
 	var time string = parsed_time[1]
 	// get next post id
-	postId := rt.db.GetNextPostId()
+	postId, err := rt.db.GetNextPostId()
+	if err != nil {
+		// error on our side: log the error and send a 500 to the user
+		ctx.Logger.WithError(err).Error("can't get id for post")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	// parse request
 	err = r.ParseMultipartForm(32 << 20)

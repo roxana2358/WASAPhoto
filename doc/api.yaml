@@ -46,7 +46,7 @@ components:
           maxItems: 10000
     userPost:
       title: User post
-      description: This represents a sigle user post.
+      description: This represents a single user post.
       type: object
       properties:
         userId: { $ref: "#/components/schemas/ID" }
@@ -67,13 +67,13 @@ components:
           maxLength: 8
           example: "08:30:00"
         likes:
-          description: Number of likes
-          type: integer
-          example: 56
+          description: Post likes
+          type: array
+          items: { $ref: "#/components/schemas/ID"}
         comments:
-          description: Number of comments
-          type: integer
-          example: 28
+          description: Post comments
+          type: array
+          items: { $ref: "#/components/schemas/comment"}
     username:
       title: Username
       description: Username that everyone can see
@@ -98,6 +98,21 @@ components:
       maximum: 999999
       example: 80
       readOnly: true
+    comment:
+      title: Comment
+      description: Comment informations
+      type: object
+      properties:
+        username: { $ref: "#/components/schemas/username"}
+        userId: { $ref: "#/components/schemas/ID"}
+        text:
+          description: Content of comment
+          type: string
+          pattern: "^.*?$"
+          minLength: 1
+          maxLength: 300
+          example: "Nice pic!"
+
   responses:
     NoContent: 
       description: "Operation successful; no response body needed."

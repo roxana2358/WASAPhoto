@@ -1,6 +1,9 @@
 package database
 
-import "sort"
+import (
+	"database/sql"
+	"sort"
+)
 
 /**
 * Gets the stream with 30 post from following in reverse chronological order.
@@ -26,28 +29,58 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 		if err != nil {
 			return userStream, err
 		}
-		// get number of likes
-		row := db.c.QueryRow(`SELECT count(*) 
+
+		// get likes
+		l, err := db.c.Query(`SELECT Likes.UserId 
 							FROM Posts 
 							INNER JOIN Likes ON Posts.PostId=Likes.PostId 
 							WHERE PostId=?`, userPost.PostID)
-		var likes int
-		err = row.Scan(&likes)
-		if err != nil {
+		if err == sql.ErrNoRows {
+			// no likes
+			userPost.Likes = nil
+		} else if err == nil {
+			// likes
+			var likeId uint64
+			var likes []uint64
+			for l.Next() {
+				e := l.Scan(&likeId)
+				if e != nil {
+					return userStream, err
+				}
+				likes = append(likes, likeId)
+			}
+			userPost.Likes = likes
+		} else if err != nil {
+			// other error
 			return userStream, err
 		}
-		userPost.Likes = likes
-		// get number of comments
-		row = db.c.QueryRow(`SELECT count(*) 
-							FROM Posts 
-							INNER JOIN Comments ON Posts.PostId=Comments.PostId 
-							WHERE PostId=?`, userPost.PostID)
-		var comments int
-		err = row.Scan(&comments)
-		if err != nil {
+
+		// get comments
+		c, err := db.c.Query(`SELECT Users.Username, Comments.UserId, Comments.Text, Comments.CommentId
+							FROM Comments
+							INNER JOIN Posts ON Posts.PostId=Comments.PostId
+							INNER JOIN Users ON Comments.UserId=Users.Id 
+							WHERE Comments.PostId=?`, userPost.PostID)
+		if err == sql.ErrNoRows {
+			// no comments
+			userPost.Comments = nil
+		} else if err == nil {
+			// comments
+			var comment CommentOBJ
+			var comments []CommentOBJ
+			for c.Next() {
+				err = c.Scan(&comment.Username, &comment.UserID, &comment.Comment, &comment.CommentId)
+				if err != nil {
+					return userStream, err
+				}
+				comments = append(comments, comment)
+			}
+			userPost.Comments = comments
+		} else if err != nil {
+			// other error
 			return userStream, err
 		}
-		userPost.Comments = comments
+
 		// add userPost to userStream
 		userStream = append(userStream, userPost)
 	}

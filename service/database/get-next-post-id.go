@@ -1,15 +1,20 @@
 package database
 
+import "database/sql"
+
 /**
 * Gets the filename of the image with imageId.
  */
-func (db *appdbimpl) GetNextPostId() uint64 {
+func (db *appdbimpl) GetNextPostId() (uint64, error) {
 	//get next id
 	row := db.c.QueryRow(`SELECT PostId FROM Posts WHERE PostId=(SELECT max(PostId) FROM Posts)`)
 	var postId uint64
-	if row.Scan(&postId) != nil {
+	err := row.Scan(&postId)
+	if err == sql.ErrNoRows {
 		postId = 0
+	} else if err != nil {
+		return postId, err
 	}
 	postId++
-	return postId
+	return postId, nil
 }
