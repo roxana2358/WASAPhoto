@@ -1,6 +1,4 @@
 <script>
-import { resolveDirective } from 'vue';
-
 export default {
 	data: function() {
 		return {
@@ -35,24 +33,18 @@ export default {
 </script>
 
 <template>
-	<div style="position:absolute; left:730px; top: 150px; width:400px">
-		<div
-			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-			<h1 class="h2">Login page</h1>
-		</div>
+	<div style="position:absolute; left:720px; top: 150px; width:400px">
+		<h1 style="text-align: center" class="h2">LOGIN PAGE</h1>
 
 		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+		<LoadingSpinner v-if="loading"></LoadingSpinner>
 
-		<div class="mb-3">
-			<label for="description" class="form-label">Insert your username</label>
-			<input type="string" class="form-control" id="Username" v-model="username">
-		</div>
-
-		<div>
-			<button style="width:400px" type="button" class="btn btn-primary" @click="doLogin">
-				Login
-			</button>
-			<LoadingSpinner v-if="loading"></LoadingSpinner>
+		<div class="card text-center" style="width: 25rem;">
+  			<div class="card-body">
+    			<h5 class="card-title">Insert your username</h5>
+				<input type="string" class="form-control" id="Username" v-model="username" placeholder="Username">
+    			<button type="button" class="btn btn-primary" @click="doLogin"> Login</button>
+  			</div>
 		</div>
 	</div>
 </template>

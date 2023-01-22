@@ -19,7 +19,7 @@ export default {
 						username: this.newUsername
 					},	{ 
 						headers: {
-							Authorization: this.token }
+							Authorization: "Bearer "+this.token }
 					});
 				localStorage.setItem("username", this.newUsername);
                 this.$router.push("/profile")

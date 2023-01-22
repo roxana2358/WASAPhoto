@@ -6,7 +6,6 @@ export default {
 			loading: false,
 			user: null,
 			photos: [],
-			immagine: undefined,
 		}
 	},
 	methods: {
@@ -18,17 +17,15 @@ export default {
 			this.errormsg = null;
 			try {
 				for (let i = 0; i<this.user.photos.length; i++ ) {
-					this.$axios.get(`posts/${this.user.photos[i]}`, {
+					let res = await this.$axios.get(`posts/${this.user.photos[i]}`, {
+							responseType:  'arraybuffer',
 							headers: {
-								Authorization: localStorage.getItem("token"),
-								Accept: 'image/png'
+								Authorization: "Bearer "+localStorage.getItem("token"),
 							}
-					}).then( (res) => {
-						// TO-DO
-						this.photos[i] = res.data;
 					});
+					let blob = new Blob([res.data]);
+					this.photos[i]= URL.createObjectURL(blob);
 				};
-				this.immagine = this.photos[0];
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -40,7 +37,7 @@ export default {
 			try {
 				let res = await this.$axios.get(`/users/${localStorage.getItem("token")}`, {
 					headers: {
-						Authorization: localStorage.getItem("token") 
+						Authorization: "Bearer "+localStorage.getItem("token")
 					}
 				});
 				this.user = res.data;
@@ -61,8 +58,7 @@ export default {
 	<SideMenu></SideMenu>
 
 	<div>
-		<div
-			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h1 class="h2">Personal profile</h1>
 			<div class="btn-toolbar mb-2 mb-md-0">
 				<div class="btn-group me-2">
@@ -71,7 +67,6 @@ export default {
 					</button>
 				</div>
 			</div>
-
 		</div>
 
 		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
@@ -98,8 +93,7 @@ export default {
 
 		<div>
             <div>
-				<label for="description" class="form-label">{{ photos }}</label>
-				<img :src="immagine" alt="ph">
+				<img style="width:500px; height:500px;" class="card-img" v-for="p in photos" :src=p>
             </div>
 		</div>
 

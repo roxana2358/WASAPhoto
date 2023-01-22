@@ -2,8 +2,9 @@ package api
 
 import (
 	"errors"
-	"image/png"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"wasa-photo/service/api/reqcontext"
 	"wasa-photo/service/database"
@@ -35,19 +36,29 @@ func (rt *_router) getImage(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	// request the photo
-	img, err := rt.db.GetImage(postId)
+	// request the filename
+	filename, err := rt.db.GetImage(postId)
 	if errors.Is(err, database.ErrFileNotFound) {
 		w.WriteHeader(http.StatusNotFound)
 		return
-	} else if err != nil {
+	}
+	// open file
+	imgFile, err := os.Open(filename)
+	if err != nil {
 		// error on our side: log the error and send a 500 to the user
-		ctx.Logger.WithError(err).Error("can't decode image")
+		ctx.Logger.WithError(err).Error("can't open image")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	defer imgFile.Close()
 
 	// send output to user
 	w.Header().Set("Content-Type", "image/png")
-	_ = png.Encode(w, img)
+	_, err = io.Copy(w, imgFile)
+	if err != nil {
+		// error on our side: log the error and send a 500 to the user
+		ctx.Logger.WithError(err).Error("can't send image")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }

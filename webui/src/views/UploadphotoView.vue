@@ -24,12 +24,15 @@ export default {
             this.loading = true;
 			this.errormsg = null;
 			try {
-				await this.$axios.post("/posts", this.image, {
+				let formData = new FormData();
+				formData.append("file", this.image)
+				await this.$axios.post("/posts", formData, {
 					headers: {
-						Authorization: localStorage.getItem("token"),
-                        'Content-Type': 'image/png'
+						Authorization: "Bearer "+localStorage.getItem("token"),
+                        "Content-Type": "multipart/form-data",
 					}
 				});
+				this.$router.push("/profile")
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -67,9 +70,8 @@ export default {
 
         <div v-if="previewImage">
             <div>
-                <img class="preview my-3" :src="previewImage" alt="" />
+                <img style="width:500px; height:500px;" class="preview my-3" :src="previewImage" alt="" />
              </div>
-             <label for="description" class="form-label">{{ this.$refs.file.files }}</label>
         </div>
 	</div>
 

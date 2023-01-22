@@ -361,7 +361,7 @@ paths:
       requestBody:
         description: The photo to upload on profile.
         content:
-          image/png: 
+          multipart/form-data: 
             schema:
               description: File to be uploaded
               type: string

@@ -20,12 +20,12 @@ export default {
 						username: this.username
 					},
 					headers: {
-						Authorization: localStorage.getItem("token")
+						Authorization: "Bearer "+localStorage.getItem('token')
 					}
 				});
 				let res2 = await this.$axios.get(`/users/${res1.data}`, {
 					headers: {
-						Authorization: localStorage.getItem("token")
+						Authorization: "Bearer "+localStorage.getItem('token')
 					}
 				});
 				this.user = res2.data;
@@ -109,12 +109,12 @@ export default {
 						username: this.username
 					},
 					headers: {
-						Authorization: localStorage.getItem("token")
+						Authorization: "Bearer "+localStorage.getItem('token')
 					}
 				});
 				let res2 = await this.$axios.get(`/users/${res1.data}`, {
 					headers: {
-						Authorization: localStorage.getItem("token")
+						Authorization: "Bearer "+localStorage.getItem('token')
 					}
 				});
 				this.user = res2.data;

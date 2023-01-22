@@ -14,7 +14,7 @@ export default {
 			try {
 				let res = await this.$axios.get("/users/" + localStorage.getItem('token') + "/stream", { 
 					headers: { 
-						Authorization: localStorage.getItem('token')
+						Authorization: "Bearer "+localStorage.getItem('token')
 					} 
 				});
 				this.stream = res.data;

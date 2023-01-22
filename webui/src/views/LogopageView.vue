@@ -20,7 +20,7 @@ export default {
 </script>
 
 <template>
-	<div style="position:absolute; left:730px; top: 150px">
+	<div style="position:absolute; left:720px; top: 150px; width:500px">
 		<div>
 			<h1>Welcome to Wasa Photo</h1>
 		</div>
@@ -30,11 +30,11 @@ export default {
 		</div>
 
 		<div>
-			<button style="width:480px" v-if="!loading" type="button" class="btn btn-primary" @click="next">
+			<button style="width:500px" v-if="!loading" type="button" class="btn btn-primary" @click="next">
 				Log in
 			</button>
-			<LoadingSpinner v-if="loading"></LoadingSpinner>
 		</div>
+		<LoadingSpinner v-if="loading"></LoadingSpinner>
 	</div>
 </template>
 

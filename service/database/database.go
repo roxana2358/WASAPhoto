@@ -8,7 +8,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"image"
 )
 
 // AppDatabase is the high level interface for the DB
@@ -22,8 +21,9 @@ type AppDatabase interface {
 	DeleteFollow(user uint64, unfollow uint64) error
 	CreateBan(user uint64, ban uint64) error
 	DeleteBan(user uint64, unban uint64) error
-	CreatePhoto(user uint64, time string, date string, image image.Image) (uint64, error)
-	GetImage(imageId uint64) (image.Image, error)
+	GetNextPostId() uint64
+	CreatePhoto(userID uint64, postId uint64, time string, date string, fileName string) (uint64, error)
+	GetImage(imageId uint64) (string, error)
 	DeletePhoto(user uint64, post uint64) error
 	CreateComment(user uint64, post uint64, comment string) (uint64, error)
 	DeleteComment(userID uint64, postID uint64, commentID uint64) error

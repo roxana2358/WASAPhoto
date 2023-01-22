@@ -46,7 +46,7 @@ type Userpost struct {
 * Gets token from header.
  */
 func getHeaderToken(r *http.Request) (uint64, error) {
-	auth := strings.Split(r.Header.Get("Authorization"), " ")[0]
+	auth := strings.Split(r.Header.Get("Authorization"), " ")[1]
 	// token absent
 	if strings.Compare(auth, "") == 0 {
 		return 0, ErrUnauthorized
