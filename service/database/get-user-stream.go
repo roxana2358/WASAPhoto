@@ -34,7 +34,7 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 		l, err := db.c.Query(`SELECT Likes.UserId 
 							FROM Posts 
 							INNER JOIN Likes ON Posts.PostId=Likes.PostId 
-							WHERE PostId=?`, userPost.PostID)
+							WHERE Posts.PostId=?`, userPost.PostID)
 		if err == sql.ErrNoRows {
 			// no likes
 			userPost.Likes = nil

@@ -55,7 +55,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Users
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Users';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE IF NOT EXISTS Users (
+		sqlStmt := `CREATE TABLE Users (
 			Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 			Username TEXT UNIQUE
 );`
@@ -68,7 +68,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Following (UserId FOLLOWES FollowingId)
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Following';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE IF NOT EXISTS Following (
+		sqlStmt := `CREATE TABLE Following (
 			UserId INTEGER NOT NULL, 
 			FollowingId INTEGER NOT NULL,
 			FOREIGN KEY(UserId) REFERENCES Users(Id),
@@ -84,7 +84,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Ban (UserId BANNED BannedId)
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Ban';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE IF NOT EXISTS Ban (
+		sqlStmt := `CREATE TABLE Ban (
 			UserId INTEGER NOT NULL, 
 			BannedId INTEGER NOT NULL,
 			FOREIGN KEY(UserId) REFERENCES Users(Id),
@@ -100,7 +100,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Posts
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Posts';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE IF NOT EXISTS Posts (
+		sqlStmt := `CREATE TABLE Posts (
 			PostId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 			UserId INTEGER,
 			Filename TEXT,
@@ -117,7 +117,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Likes
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Likes';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE IF NOT EXISTS Likes (
+		sqlStmt := `CREATE TABLE Likes (
 			PostId INTEGER NOT NULL,
 			UserId INTEGER NOT NULL,
 			FOREIGN KEY(PostId) REFERENCES Posts(PostId),
@@ -133,7 +133,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	// Comments
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Comments';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE IF NOT EXISTS Comments (
+		sqlStmt := `CREATE TABLE Comments (
 			CommentId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			PostId INTEGER NOT NULL,
 			UserId INTEGER NOT NULL, 

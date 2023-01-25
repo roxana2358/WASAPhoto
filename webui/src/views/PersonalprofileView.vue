@@ -20,7 +20,7 @@ export default {
 					let res = await this.$axios.get(`posts/${this.user.photos[i]}`, {
 							responseType:  'arraybuffer',
 							headers: {
-								Authorization: "Bearer "+localStorage.getItem("token"),
+								Accept: "image/*"
 							}
 					});
 					let blob = new Blob([res.data]);
@@ -35,11 +35,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let res = await this.$axios.get(`/users/${localStorage.getItem("token")}`, {
-					headers: {
-						Authorization: "Bearer "+localStorage.getItem("token")
-					}
-				});
+				let res = await this.$axios.get(`/users/${localStorage.getItem("token")}`, null);
 				this.user = res.data;
 				this.getPhotos();
 			} catch (e) {
@@ -55,50 +51,51 @@ export default {
 </script>
 
 <template>
-	<SideMenu></SideMenu>
-
 	<div>
-		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-			<h1 class="h2">Personal profile</h1>
-			<div class="btn-toolbar mb-2 mb-md-0">
-				<div class="btn-group me-2">
-					<button type="button" class="btn btn-sm btn-outline-secondary" @click="changeUsernamePage">
-						Change username
-					</button>
+		<SideMenu></SideMenu>
+
+		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#smile"/></svg>
+				<h1 class="h2">Personal profile</h1>
+				<div class="btn-toolbar mb-2 mb-md-0">
+					<div class="btn-group me-2">
+						<button type="button" class="btn btn-sm btn-outline-secondary" @click="changeUsernamePage">
+							Change username
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+			<LoadingSpinner v-if="loading"></LoadingSpinner>
+
+			<div class="mb-3">
+				<p class="card-text">
+					Hello there!<br />
+				</p>
+			</div>
+
+			<div class="card" v-if="!loading && user!=null">
+				<div class="card-header">
+					Username: {{ this.user.username }}
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						Number of photos: {{ this.user.numberOfPhotos }}<br />
+						Followers: {{ this.user.followers }}<br />
+						Following: {{ this.user.following }}<br />
+					</p>
+				</div>
+			</div>
+
+			<div>
+				<div>
+					<img style="width:500px; height:500px;" class="card-img" v-for="p in photos" :src=p v-bind:key="p">
 				</div>
 			</div>
 		</div>
-
-		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-		<LoadingSpinner v-if="loading"></LoadingSpinner>
-
-		<div class="mb-3">
-			<p class="card-text">
-				Hello there!<br />
-			</p>
-		</div>
-
-		<div class="card" v-if="!loading && user!=null">
-			<div class="card-header">
-				Username: {{ this.user.username }}
-			</div>
-			<div class="card-body">
-				<p class="card-text">
-					Number of photos: {{ this.user.numberOfPhotos }}<br />
-					Followers: {{ this.user.followers }}<br />
-					Following: {{ this.user.following }}<br />
-				</p>
-			</div>
-		</div>
-
-		<div>
-            <div>
-				<img style="width:500px; height:500px;" class="card-img" v-for="p in photos" :src=p>
-            </div>
-		</div>
-
 	</div>
-
 </template>
 
 <style>

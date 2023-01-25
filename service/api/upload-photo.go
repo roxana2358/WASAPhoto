@@ -33,7 +33,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	// get time and date
 	parsed_time := strings.Split(time.Now().UTC().String(), " ")
 	var date string = parsed_time[0]
-	var time string = parsed_time[1]
+	var time string = strings.Split(parsed_time[1], ".")[0]
 	// get next post id
 	postId, err := rt.db.GetNextPostId()
 	if err != nil {

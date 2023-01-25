@@ -53,7 +53,7 @@ func (rt *_router) getImage(w http.ResponseWriter, r *http.Request, ps httproute
 	defer imgFile.Close()
 
 	// send output to user
-	w.Header().Set("Content-Type", "image/png")
+	w.Header().Set("Content-Type", "image/*")
 	_, err = io.Copy(w, imgFile)
 	if err != nil {
 		// error on our side: log the error and send a 500 to the user

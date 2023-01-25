@@ -17,12 +17,9 @@ export default {
 				this.token = localStorage.getItem("token");
 				await this.$axios.put(`/users/${this.token}`, { 
 						username: this.newUsername
-					},	{ 
-						headers: {
-							Authorization: "Bearer "+this.token }
-					});
+					}, null);
 				localStorage.setItem("username", this.newUsername);
-                this.$router.push("/profile")
+                this.$router.back();
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -33,42 +30,31 @@ export default {
 </script>
 
 <template>
-	<SideMenu></SideMenu>
-
 	<div>
-		<div
-			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-			<h1 class="h2">Change your username</h1>
-			<div class="btn-toolbar mb-2 mb-md-0">
-				<div class="btn-group me-2">
-					<button type="button" class="btn btn-sm btn-outline-secondary" @click="changeUsernamePage">
-						Change username
-					</button>
-				</div>
+		<SideMenu></SideMenu>
+
+		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
+			<div
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<h1 class="h2">Change your username</h1>
 			</div>
 
+			<div style="align-items: center;">
+				<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+				<LoadingSpinner v-if="loading"></LoadingSpinner>
+
+				<div class="card text-center" style="width:fit-content; margin: auto;">
+					<div class="card-body">
+						<p class="card-text">This is yout current username: {{ oldUsername }}</p>
+						<p class="card-text">Insert your new username: </p>
+						<input style="width:200px; margin: auto;" type="string" class="form-control" id="Username" v-model="newUsername">
+						<p></p>
+						<button style="width:200px" v-if="!loading" type="button" class="btn btn-primary" @click="changeUsername">OK!</button>
+					</div>
+				</div>
+			</div>
 		</div>
-
-		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-		<LoadingSpinner v-if="loading"></LoadingSpinner>
-
-		<div class="mb-3">
-			<p class="card-text">
-				This is your current username: {{ this.oldUsername }}.<br />
-				Insert your new username:
-				<input type="string" class="form-control" id="Username" v-model="newUsername">
-			</p>
-		</div>
-
-		<div>
-			<button style="width:200px" v-if="!loading" type="button" class="btn btn-primary" @click="changeUsername">
-				OK!
-			</button>
-			<LoadingSpinner v-if="loading"></LoadingSpinner>
-		</div>
-
 	</div>
-
 </template>
 
 <style>

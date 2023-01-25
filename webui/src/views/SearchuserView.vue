@@ -19,15 +19,8 @@ export default {
 					params: {
 						username: this.username
 					},
-					headers: {
-						Authorization: "Bearer "+localStorage.getItem('token')
-					}
 				});
-				let res2 = await this.$axios.get(`/users/${res1.data}`, {
-					headers: {
-						Authorization: "Bearer "+localStorage.getItem('token')
-					}
-				});
+				let res2 = await this.$axios.get(`/users/${res1.data}`, null);
 				this.user = res2.data;
 				if (this.user.followers == null) {
 					this.followButton = true;
@@ -45,11 +38,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				await this.$axios.put(`/users/${localStorage.getItem("token")}/following/${id}`, null ,{
-					headers: {
-						'Authorization': localStorage.getItem("token")
-					}
-				});
+				await this.$axios.put(`/users/${localStorage.getItem("token")}/following/${id}`, null, null);
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -60,11 +49,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				await this.$axios.delete(`/users/${localStorage.getItem("token")}/following/${id}`, {
-					headers: {
-						'Authorization': localStorage.getItem("token")
-					}
-				});
+				await this.$axios.delete(`/users/${localStorage.getItem("token")}/following/${id}`, null);
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -75,11 +60,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				await this.$axios.put(`/users/${localStorage.getItem("token")}/ban/${id}`, null ,{
-					headers: {
-						'Authorization': localStorage.getItem("token")
-					}
-				});
+				await this.$axios.put(`/users/${localStorage.getItem("token")}/ban/${id}`, null, null);
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -90,11 +71,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				await this.$axios.delete(`/users/${localStorage.getItem("token")}/ban/${id}`, {
-					headers: {
-						'Authorization': localStorage.getItem("token")
-					}
-				});
+				await this.$axios.delete(`/users/${localStorage.getItem("token")}/ban/${id}`, null);
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -108,15 +85,8 @@ export default {
 					params: {
 						username: this.username
 					},
-					headers: {
-						Authorization: "Bearer "+localStorage.getItem('token')
-					}
 				});
-				let res2 = await this.$axios.get(`/users/${res1.data}`, {
-					headers: {
-						Authorization: "Bearer "+localStorage.getItem('token')
-					}
-				});
+				let res2 = await this.$axios.get(`/users/${res1.data}`, null);
 				this.user = res2.data;
 				if (this.user.followers == null) {
 					this.followButton = true;
@@ -134,48 +104,50 @@ export default {
 </script>
 
 <template>
-	<SideMenu></SideMenu>
-
 	<div>
-		<div
-			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-			<h1 class="h2">Search user</h1>
-		</div>
+		<SideMenu></SideMenu>
 
-		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-		<LoadingSpinner v-if="loading"></LoadingSpinner>
-
-		<div class="mb-3">
-			<label for="description" class="form-label">Insert username</label>
-			<input type="string" class="form-control" id="Username" v-model="username">
-		</div>
-
-		<div>
-			<button style="width:200px" v-if="!loading" type="button" class="btn btn-primary" @click="getUser">
-				Search
-			</button>
-			<LoadingSpinner v-if="loading"></LoadingSpinner>
-		</div>
-
-		<div class="card" v-if="!loading && user!=null">
-			<div class="card-header">
-				Username: {{ user.username }}
+		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#eye"/></svg>
+				<h1 class="h2">Search user</h1>
+				<div></div>
 			</div>
-			<div class="card-body">
-				<p class="card-text">
-					Number of photos: {{ this.user.numberOfPhotos }}<br />
-					Followers: {{ this.user.followers }}<br />
-					Following: {{ this.user.following }}
-				</p>
-				<a v-if="followButton && banButton" href="javascript:" class="btn btn-success" @click="followUser(user.id)">Follow</a>
-				<a v-if="!followButton" href="javascript:" class="btn btn-danger" @click="unfollowUser(user.id)">Unfollow</a>
 
-				<a v-if="banButton" href="javascript:" class="btn btn-success" @click="banUser(user.id)">Ban</a>
-				<a v-if="!banButton" href="javascript:" class="btn btn-danger" @click="unbanUser(user.id)">Unban</a>
+			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+			<LoadingSpinner v-if="loading"></LoadingSpinner>
+
+			<div class="mb-3">
+				<label for="description" class="form-label">Insert username</label>
+				<input type="string" class="form-control" id="Username" v-model="username">
+			</div>
+
+			<div>
+				<button style="width:200px" v-if="!loading" type="button" class="btn btn-primary" @click="getUser">
+					Search
+				</button>
+				<LoadingSpinner v-if="loading"></LoadingSpinner>
+			</div>
+
+			<div class="card" v-if="!loading && user!=null">
+				<div class="card-header">
+					Username: {{ user.username }}
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						Number of photos: {{ this.user.numberOfPhotos }}<br />
+						Followers: {{ this.user.followers }}<br />
+						Following: {{ this.user.following }}
+					</p>
+					<a v-show="followButton && banButton" href="javascript:" class="btn btn-success" @click="followUser(user.id)">Follow</a>
+					<a v-show="!followButton" href="javascript:" class="btn btn-danger" @click="unfollowUser(user.id)">Unfollow</a>
+
+					<a v-show="banButton" href="javascript:" class="btn btn-success" @click="banUser(user.id)">Ban</a>
+					<a v-show="!banButton" href="javascript:" class="btn btn-danger" @click="unbanUser(user.id)">Unban</a>
+				</div>
 			</div>
 		</div>
 	</div>
-
 </template>
 
 <style>

@@ -28,7 +28,6 @@ export default {
 				formData.append("file", this.image)
 				await this.$axios.post("/posts", formData, {
 					headers: {
-						Authorization: "Bearer "+localStorage.getItem("token"),
                         "Content-Type": "multipart/form-data",
 					}
 				});
@@ -45,36 +44,39 @@ export default {
 </script>
 
 <template>
-    <SideMenu></SideMenu>
-
 	<div>
-		<div
-			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-			<h1 class="h2">Upload your photo</h1>
-		</div>
+		<SideMenu></SideMenu>
 
-		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-		<LoadingSpinner v-if="loading"></LoadingSpinner>
+		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
+			<div
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#plus-circle"/></svg>
+				<h1 class="h2">Upload your photo</h1>
+				<div></div>
+			</div>
 
-        <div class="mb-3">
-			<label for="description" class="form-label">Insert your photo</label>
-			<input type="file" accept="image/png" ref="file" @change="selectImage">
-		</div>
-
-		<div>
-			<button style="width:200px" v-if="!loading && previewImage!=undefined" type="button" class="btn btn-success" @click="uploadImage">
-				Upload!
-			</button>
+			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 			<LoadingSpinner v-if="loading"></LoadingSpinner>
+
+			<div class="mb-3">
+				<label for="description" class="form-label">Insert your photo</label>
+				<input type="file" accept="image/png" ref="file" @change="selectImage">
+			</div>
+
+			<div>
+				<button style="width:200px" v-if="!loading && previewImage!=undefined" type="button" class="btn btn-success" @click="uploadImage">
+					Upload!
+				</button>
+				<LoadingSpinner v-if="loading"></LoadingSpinner>
+			</div>
+
+			<div v-if="previewImage">
+				<div>
+					<img style="height:500px;" class="preview my-3" :src="previewImage" alt="" />
+				</div>
+			</div>
 		</div>
-
-        <div v-if="previewImage">
-            <div>
-                <img style="width:500px; height:500px;" class="preview my-3" :src="previewImage" alt="" />
-             </div>
-        </div>
 	</div>
-
 </template>
 
 <style>
