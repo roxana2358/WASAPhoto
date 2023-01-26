@@ -10,7 +10,7 @@ export default {
 		doLogin: async function () {
 			this.errormsg = null;
 			try {
-				if (this.username == null || this.username == "") {
+				if (this.username == null || this.username.localeCompare("")==0) {
 					this.errormsg = "Your credentials are not valid!"
 					return;
 				}
@@ -19,13 +19,6 @@ export default {
 				});
 				localStorage.setItem('username', this.username);
 				localStorage.setItem('token', res.data.id);
-				this.$axios.interceptors.request.use(function (config) {
-					config.headers['Authorization'] = "Bearer "+localStorage.getItem('token');
-					return config;
-				}, function (error) {
-					console.log(error);
-					return Promise.reject(error);
-				});
 				this.$router.replace("/home");
 			} catch (e) {
 				this.errormsg = e.toString();

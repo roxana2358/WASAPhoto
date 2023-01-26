@@ -48,6 +48,12 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
+	// check if the userId is the same as banId
+	if userId == bannedId {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	// proceed banning the user
 	err = rt.db.CreateBan(token, bannedId)
 	if errors.Is(err, database.ErrUserNotFound) || errors.Is(err, database.ErrUserBanned) {

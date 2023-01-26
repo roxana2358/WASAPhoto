@@ -70,10 +70,14 @@ components:
           description: Post likes
           type: array
           items: { $ref: "#/components/schemas/ID"}
+          minItems: 0
+          maxItems: 10000
         comments:
           description: Post comments
           type: array
           items: { $ref: "#/components/schemas/comment"}
+          minItems: 0
+          maxItems: 10000
     username:
       title: Username
       description: Username that everyone can see
@@ -112,6 +116,7 @@ components:
           minLength: 1
           maxLength: 300
           example: "Nice pic!"
+        commentId: { $ref: "#/components/schemas/ID"}
 
   responses:
     NoContent: 
@@ -175,8 +180,8 @@ tags:
     description: Functions for the "following" list
   - name: "Ban"
     description: Functions for the "banned" list
-  - name: "Photo"
-    description: Functions for updating info about a photo
+  - name: "Post"
+    description: Functions for the posts
     
 paths:
   /session:
@@ -364,14 +369,40 @@ paths:
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /photos/{postID}:
+    parameters:
+      - $ref: "#/components/parameters/postID"
+    summary: List of photos
+    description: This is the lists of all photos
+    get:
+      tags: ["Post"]
+      summary: Gets the raw image
+      description: Gets the image requested
+      operationId: getImage
+      responses:
+        '200':
+          description: Requested image
+          content:
+            image/png:
+              schema:
+                description: Raw image
+                type: string
+                format: binary
+                minLength: 1
+                maxLength: 10000
+        '400': { $ref: "#/components/responses/BadRequest" }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '404': { $ref: "#/components/responses/NotFound" }
+        '500': { $ref: '#/components/responses/InternalServerError' }
   
   /posts:
-    summary: List of photos
-    description: This is the list of all photos.
+    summary: List of posts
+    description: This is the list of all posts
     post:
-      tags: ["Photo"]
+      tags: ["Post"]
       summary: Uploads a photo
-      description: Uploads the photo send in the request body.
+      description: Creates a new post
       operationId: uploadPhoto
       requestBody:
         description: The photo to upload on profile.
@@ -397,29 +428,24 @@ paths:
     parameters:
       - $ref: "#/components/parameters/postID"
     get:
-      tags: ["Photo"]
-      summary: Gets the raw image
-      description: Gets the image requested
-      operationId: getImage
+      tags: ["Post"]
+      summary: Gets the post
+      description: Gets the post requested
+      operationId: getUserPost
       responses:
         '200':
-          description: Requested image
+          description: Requested post
           content:
-            image/png:
-              schema:
-                description: Raw image
-                type: string
-                format: binary
-                minLength: 1
-                maxLength: 10000
+            application/json:
+              schema: { $ref : "#/components/schemas/userPost"}
         '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: '#/components/responses/InternalServerError' }
     delete:
-      tags: ["Photo"]
+      tags: ["Post"]
       summary: Deletes a photo
-      description: Deletes the photo from user's profile.
+      description: Deletes the entire post from user's profile.
       operationId: deletePhoto
       responses:
         '204': { $ref: '#/components/responses/NoContent' }
@@ -432,7 +458,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/postID"
     post:
-      tags: ["Photo"]
+      tags: ["Post"]
       summary: Adds a comment
       description: Adds a comment to the photo.
       operationId: commentPhoto
@@ -463,7 +489,7 @@ paths:
       - $ref: "#/components/parameters/postID"
       - $ref: "#/components/parameters/commentID"
     delete:
-      tags: ["Photo"]
+      tags: ["Post"]
       summary: Deletes a comment
       description: Removes a comment from the photo.
       operationId: uncommentPhoto
@@ -479,7 +505,7 @@ paths:
       - $ref: "#/components/parameters/postID"
       - $ref: "#/components/parameters/userID"
     put:
-      tags: ["Photo"]
+      tags: ["Post"]
       summary: Adds a like to a photo
       description: Adds a like to the photo.
       operationId: likePhoto
@@ -490,7 +516,7 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalServerError' }
     delete:
-      tags: ["Photo"]
+      tags: ["Post"]
       summary: Removes a like
       description: Removes a like from the photo.
       operationId: unlikePhoto

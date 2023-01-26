@@ -5,7 +5,7 @@ export default {
 			errormsg: null,
 			loading: false,
 			time: null,
-			stream: [],
+			stream: []
 		}
 	},
 	methods: {
@@ -21,6 +21,9 @@ export default {
 			}
 			this.loading = false;
 		},
+		displayError: async function(error) {
+			this.errormsg = error.toString();
+		}
 	},
 	mounted() {
 		this.refresh()
@@ -38,7 +41,7 @@ export default {
 				<h1 class="h2">Home page</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
-						<button type="button" class="btn btn-sm btn-outline-secondary" @click="refresh">
+						<button type="button" class="btn btn-sm btn-outline-info" @click="refresh">
 							Refresh (last update {{ time }})
 						</button>
 					</div>
@@ -48,26 +51,14 @@ export default {
 			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 			<LoadingSpinner v-if="loading"></LoadingSpinner>
 
-			<div v-if="!loading">
-				<div class="card" v-if="stream == null">
+			<div v-show="!loading">
+				<div v-if="stream == null" class="card">
 					<div class="card-body">
 						<p>No posts to be shown.</p>
 					</div>
 				</div>
 
-				<div class="card" v-else v-for="p in stream" :key="p">
-					<div class="card-header">
-						Username: {{ p.Username }}
-					</div>
-					<div class="card-body">
-						<p class="card-text">
-							Date: {{ p.date }}<br />
-							Time: {{ p.time }}<br />
-							Likes: {{ p.likes }}<br />
-							Comments: {{ p.comments }}
-						</p>
-					</div>
-				</div>
+				<UserPost v-else v-for="post in stream" v-bind:post="post" :key="post" @notifyError="displayError($event)"></UserPost>
 			</div>
 		</div>
 	</div>

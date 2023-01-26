@@ -5,7 +5,8 @@ export default {
 			errormsg: null,
 			loading: false,
 			username: null,
-			user: null,
+			profile: null,
+			posts: [],
 			followButton: false,
 			banButton: false,
 		}
@@ -21,83 +22,71 @@ export default {
 					},
 				});
 				let res2 = await this.$axios.get(`/users/${res1.data}`, null);
-				this.user = res2.data;
-				if (this.user.followers == null) {
-					this.followButton = true;
-				} else { this.followButton = !this.user.followers.includes(localStorage.getItem("username")); }
-				if (this.user.banned == null) {
-					this.banButton = true;
-				} else { this.banButton = !this.user.banned.includes(this.user.username); }
+				this.profile = res2.data;
+				for (let i = 0; i<this.profile.numberOfPhotos; i++ ) {
+					let res3 = await this.$axios.get(`posts/${this.profile.posts[i]}`, null);
+					this.posts[i] = res3.data;
+				}
+				this.setButtons();
 			} catch (e) {
 				this.errormsg = e.toString();
-				this.user = null;
+				this.profile = null;
 			}
 			this.loading = false;
-		},
-		async followUser(id) {
-			this.loading = true;
-			this.errormsg = null;
-			try {
-				await this.$axios.put(`/users/${localStorage.getItem("token")}/following/${id}`, null, null);
-			} catch (e) {
-				this.errormsg = e.toString();
-			}
-			this.loading = false;
-			this.refresh();
-		},
-		async unfollowUser(id) {
-			this.loading = true;
-			this.errormsg = null;
-			try {
-				await this.$axios.delete(`/users/${localStorage.getItem("token")}/following/${id}`, null);
-			} catch (e) {
-				this.errormsg = e.toString();
-			}
-			this.loading = false;
-			this.refresh();
-		},
-		async banUser(id) {
-			this.loading = true;
-			this.errormsg = null;
-			try {
-				await this.$axios.put(`/users/${localStorage.getItem("token")}/ban/${id}`, null, null);
-			} catch (e) {
-				this.errormsg = e.toString();
-			}
-			this.loading = false;
-			this.refresh();
-		},
-		async unbanUser(id) {
-			this.loading = true;
-			this.errormsg = null;
-			try {
-				await this.$axios.delete(`/users/${localStorage.getItem("token")}/ban/${id}`, null);
-			} catch (e) {
-				this.errormsg = e.toString();
-			}
-			this.loading = false;
-			this.refresh();
 		},
 		async refresh() {
 			this.loading = true;
 			try {
-				let res1 = await this.$axios.get("/users", {
-					params: {
-						username: this.username
-					},
-				});
-				let res2 = await this.$axios.get(`/users/${res1.data}`, null);
-				this.user = res2.data;
-				if (this.user.followers == null) {
-					this.followButton = true;
-				} else { this.followButton = !this.user.followers.includes(localStorage.getItem("username")); }
-				if (this.user.banned == null) {
-					this.banButton = true;
-				} else { this.banButton = !this.user.banned.includes(this.user.username); }
+				let res = await this.$axios.get(`/users/${this.profile.id}`, null);
+				this.profile = res.data;
+				this.setButtons();
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
 			this.loading = false;
+		},
+		async setButtons() {
+			if (this.profile.followers == null) {
+				this.followButton = true;
+			} else { this.followButton = !this.profile.followers.includes(localStorage.getItem("username")); }
+			if (this.profile.banned == null) {
+				this.banButton = true;
+			} else { this.banButton = !this.profile.banned.includes(this.profile.username); }
+		},
+		displayError: async function(error) {
+			this.errormsg = error.toString();
+		},
+		async followUser(id) {
+			try {
+				await this.$axios.put(`/users/${localStorage.getItem("token")}/following/${id}`, null, null);
+				this.refresh();
+			} catch (e) {
+				this.errormsg = e;
+			}
+		},
+		async unfollowUser(id) {
+			try {
+				await this.$axios.delete(`/users/${localStorage.getItem("token")}/following/${id}`, null);
+				this.refresh();
+			} catch (e) {
+				this.errormsg = e;
+			}
+		},
+		async banUser(id) {
+			try {
+				await this.$axios.put(`/users/${localStorage.getItem("token")}/ban/${id}`, null, null);
+				this.refresh();
+			} catch (e) {
+				this.errormsg = e;
+			}
+		},
+		async unbanUser(id) {
+			try {
+				await this.$axios.delete(`/users/${localStorage.getItem("token")}/ban/${id}`, null);
+				this.refresh();
+			} catch (e) {
+				this.errormsg = e;
+			}
 		}
 	}
 }
@@ -110,40 +99,40 @@ export default {
 		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
 			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#eye"/></svg>
-				<h1 class="h2">Search user</h1>
+				<h1 class="h2">Search profile</h1>
 				<div></div>
 			</div>
 
 			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 			<LoadingSpinner v-if="loading"></LoadingSpinner>
 
-			<div class="mb-3">
-				<label for="description" class="form-label">Insert username</label>
-				<input type="string" class="form-control" id="Username" v-model="username">
-			</div>
-
 			<div>
-				<button style="width:200px" v-if="!loading" type="button" class="btn btn-primary" @click="getUser">
-					Search
-				</button>
-				<LoadingSpinner v-if="loading"></LoadingSpinner>
-			</div>
+				<div style="display: flex; align-items: center; justify-content: space-between;">
+					<div class="card text-center searchBar">
+						<div class="card-body">
+							<p></p>
+							<p class="card-text">Insert username: </p>
+							<input style="margin: auto" type="string" class="form-control" v-model="username">
+							<p></p>
+							<button style="margin:auto; width: 100%;" v-if="!loading" type="button" class="btn btn-primary" @click="getUser">Search</button>
+						</div>
+					</div>
 
-			<div class="card" v-if="!loading && user!=null">
-				<div class="card-header">
-					Username: {{ user.username }}
+					<div class="card searchBar" v-if="profile" style="margin: auto;">
+						<UserProfile v-bind:profile="profile" v-bind:key="profile" @refresh="refresh" @notifyError="displayError"></UserProfile>
+						<div style="display: flex; align-items: center; justify-content: space-between;">
+							<a v-show="followButton && banButton" class="actionButton btn btn-success" @click="followUser(profile.id)">Follow</a>
+							<a v-show="!followButton" class="actionButton btn btn-danger" @click="unfollowUser(profile.id)">Unfollow</a>
+							<a v-show="banButton" class="actionButton btn btn-success" @click="banUser(profile.id)">Ban</a>
+							<a v-show="!banButton" class="actionButton btn btn-danger" @click="unbanUser(profile.id)">Unban</a>
+						</div>
+					</div>
 				</div>
-				<div class="card-body">
-					<p class="card-text">
-						Number of photos: {{ this.user.numberOfPhotos }}<br />
-						Followers: {{ this.user.followers }}<br />
-						Following: {{ this.user.following }}
-					</p>
-					<a v-show="followButton && banButton" href="javascript:" class="btn btn-success" @click="followUser(user.id)">Follow</a>
-					<a v-show="!followButton" href="javascript:" class="btn btn-danger" @click="unfollowUser(user.id)">Unfollow</a>
 
-					<a v-show="banButton" href="javascript:" class="btn btn-success" @click="banUser(user.id)">Ban</a>
-					<a v-show="!banButton" href="javascript:" class="btn btn-danger" @click="unbanUser(user.id)">Unban</a>
+				<p></p>
+
+				<div v-if="profile && banButton">
+					<UserPost v-for="post in posts" v-bind:post="post" v-bind:key="post" @notifyError="displayError($event)"></UserPost>
 				</div>
 			</div>
 		</div>
@@ -151,4 +140,14 @@ export default {
 </template>
 
 <style>
+.actionButton {
+	width: 10rem;
+	height: 35px;
+	border: 1px solid black;
+}
+.searchBar {
+	height: 200px;
+	width: 300px;
+	margin: auto;
+}
 </style>

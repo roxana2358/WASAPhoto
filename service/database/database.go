@@ -24,7 +24,8 @@ type AppDatabase interface {
 	GetNextPostId() (uint64, error)
 	CreatePhoto(userID uint64, postId uint64, time string, date string, fileName string) (uint64, error)
 	GetImage(imageId uint64) (string, error)
-	DeletePhoto(user uint64, post uint64) error
+	GetUserPost(userID uint64, postID uint64) (Userpost, error)
+	DeletePhoto(user uint64, post uint64) (string, error)
 	CreateComment(user uint64, post uint64, comment string) (uint64, error)
 	DeleteComment(userID uint64, postID uint64, commentID uint64) error
 	CreateLike(userID uint64, postID uint64) error

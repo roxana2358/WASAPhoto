@@ -25,7 +25,7 @@ type Comment struct {
 type Userprofile struct {
 	Id             uint64   `json:"id"`
 	Username       string   `json:"username"`
-	Photos         []uint64 `json:"photos"`
+	Photos         []uint64 `json:"posts"`
 	NumberOfPhotos int      `json:"numberOfPhotos"`
 	Followers      []string `json:"followers"`
 	Following      []string `json:"following"`
@@ -33,9 +33,9 @@ type Userprofile struct {
 }
 
 type Userpost struct {
-	UserID   uint64       `json:"id"`
+	UserID   uint64       `json:"userId"`
 	Username string       `json:"username"`
-	PostID   uint64       `json:"photo"`
+	PostID   uint64       `json:"photoId"`
 	Date     string       `json:"date"`
 	Time     string       `json:"time"`
 	Likes    []uint64     `json:"likes"`
@@ -53,17 +53,23 @@ type CommentOBJ struct {
 * Gets token from header.
  */
 func getHeaderToken(r *http.Request) (uint64, error) {
-	auth := strings.Split(r.Header.Get("Authorization"), " ")[1]
-	// token absent
-	if strings.Compare(auth, "") == 0 {
+	// split authorization
+	auth := strings.Split(r.Header.Get("Authorization"), " ")
+	if len(auth) != 2 {
+		// wrong format
 		return 0, ErrUnauthorized
 	}
-	token, err := strconv.ParseUint(auth, 10, 64)
-	// token extraction failed
+	tokenS := auth[1]
+	if strings.Compare(tokenS, "") == 0 {
+		// token absent
+		return 0, ErrUnauthorized
+	}
+	tokenI, err := strconv.ParseUint(tokenS, 10, 64)
 	if err != nil {
+		// token extraction failed
 		return 0, err
 	}
-	return token, nil
+	return tokenI, nil
 }
 
 /**

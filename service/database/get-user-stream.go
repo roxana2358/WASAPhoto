@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"sort"
 )
 
@@ -35,7 +36,7 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 							FROM Posts 
 							INNER JOIN Likes ON Posts.PostId=Likes.PostId 
 							WHERE Posts.PostId=?`, userPost.PostID)
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			// no likes
 			userPost.Likes = nil
 		} else if err == nil {
@@ -49,6 +50,9 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 				}
 				likes = append(likes, likeId)
 			}
+			if err = l.Err(); err != nil {
+				return userStream, err
+			}
 			userPost.Likes = likes
 		} else if err != nil {
 			// other error
@@ -61,7 +65,7 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 							INNER JOIN Posts ON Posts.PostId=Comments.PostId
 							INNER JOIN Users ON Comments.UserId=Users.Id 
 							WHERE Comments.PostId=?`, userPost.PostID)
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			// no comments
 			userPost.Comments = nil
 		} else if err == nil {
@@ -74,6 +78,9 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 					return userStream, err
 				}
 				comments = append(comments, comment)
+			}
+			if err = c.Err(); err != nil {
+				return userStream, err
 			}
 			userPost.Comments = comments
 		} else if err != nil {

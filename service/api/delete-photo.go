@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"net/http"
+	"os"
 	"strconv"
 	"wasa-photo/service/api/reqcontext"
 	"wasa-photo/service/database"
@@ -34,8 +35,8 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// delete image
-	err = rt.db.DeletePhoto(token, photoId)
+	// delete image from database
+	filename, err := rt.db.DeletePhoto(token, photoId)
 	if errors.Is(err, database.ErrPostNotFound) {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -45,6 +46,15 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	} else if err != nil {
 		// error on our side: log the error and send a 500 to the user
 		ctx.Logger.WithError(err).WithField("postID", photoId).Error("can't delete image")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// delete file
+	err = os.Remove(filename)
+	if err != nil {
+		// error on our side: log the error and send a 500 to the user
+		ctx.Logger.WithError(err).WithField("filename", filename).Error("can't delete file")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

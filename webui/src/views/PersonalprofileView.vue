@@ -4,48 +4,44 @@ export default {
 		return {
 			errormsg: null,
 			loading: false,
-			user: null,
-			photos: [],
+			profile: null,
+			posts: []
 		}
 	},
 	methods: {
 		changeUsernamePage: async function() {
 			this.$router.push("/settings");
 		},
-		getPhotos: async function() {
+		getProfile: async function() {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				for (let i = 0; i<this.user.photos.length; i++ ) {
-					let res = await this.$axios.get(`posts/${this.user.photos[i]}`, {
-							responseType:  'arraybuffer',
-							headers: {
-								Accept: "image/*"
-							}
-					});
-					let blob = new Blob([res.data]);
-					this.photos[i]= URL.createObjectURL(blob);
-				};
+				// get profile
+				let res1 = await this.$axios.get(`/users/${localStorage.getItem("token")}`, null);
+				this.profile = res1.data;
+				// get posts
+				for (let i = 0; i<this.profile.numberOfPhotos; i++ ) {
+					let res2 = await this.$axios.get(`posts/${this.profile.posts[i]}`, null);
+					this.posts[i] = res2.data;
+				}
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
 			this.loading = false;
 		},
-		async refresh() {
-			this.loading = true;
-			this.errormsg = null;
+		deletePhoto: async function(photoId) {
 			try {
-				let res = await this.$axios.get(`/users/${localStorage.getItem("token")}`, null);
-				this.user = res.data;
-				this.getPhotos();
-			} catch (e) {
+				console.log(photoId);
+				await this.$axios.delete(`posts/${photoId}`);
+				this.posts = [];
+				this.getProfile();
+			} catch(e) {
 				this.errormsg = e.toString();
 			}
-			this.loading = false;
 		}
 	},
 	mounted() {
-		this.refresh();
+		this.getProfile();
 	}
 }
 </script>
@@ -60,7 +56,7 @@ export default {
 				<h1 class="h2">Personal profile</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
-						<button type="button" class="btn btn-sm btn-outline-secondary" @click="changeUsernamePage">
+						<button type="button" class="btn btn-sm btn-outline-info" @click="changeUsernamePage">
 							Change username
 						</button>
 					</div>
@@ -70,28 +66,12 @@ export default {
 			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 			<LoadingSpinner v-if="loading"></LoadingSpinner>
 
-			<div class="mb-3">
-				<p class="card-text">
-					Hello there!<br />
-				</p>
-			</div>
-
-			<div class="card" v-if="!loading && user!=null">
-				<div class="card-header">
-					Username: {{ this.user.username }}
-				</div>
-				<div class="card-body">
-					<p class="card-text">
-						Number of photos: {{ this.user.numberOfPhotos }}<br />
-						Followers: {{ this.user.followers }}<br />
-						Following: {{ this.user.following }}<br />
-					</p>
-				</div>
-			</div>
-
-			<div>
-				<div>
-					<img style="width:500px; height:500px;" class="card-img" v-for="p in photos" :src=p v-bind:key="p">
+			<div v-if="profile">
+				<UserProfile class="card mb-3" style="margin: auto;" v-bind:profile="profile" v-bind:key="profile"></UserProfile>
+				
+				<div v-for="post in posts" v-bind:key="post" style="display: flex; align-items: center; justify-content: space-between;">
+					<UserPost v-bind:post="post" @notifyError="displayError($event)"></UserPost>
+					<button @click="deletePhoto(post.photoId)">Delete</button>
 				</div>
 			</div>
 		</div>

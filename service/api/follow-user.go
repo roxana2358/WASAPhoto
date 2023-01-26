@@ -48,6 +48,12 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
+	// check if the userId is the same as followingId
+	if userId == followId {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	// proceed following the user
 	err = rt.db.CreateFollow(token, followId)
 	if errors.Is(err, database.ErrUserNotFound) || errors.Is(err, database.ErrUserBanned) {
