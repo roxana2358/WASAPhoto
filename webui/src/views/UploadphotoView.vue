@@ -3,14 +3,12 @@ export default {
     data: function () {
         return {
             errormsg: null,
-            loading: false,
             image: undefined,
             previewImage: undefined,
         };
     },
     methods: {
         selectImage: async function() {
-            this.loading = true;
 			this.errormsg = null;
 			try {
                 this.image = this.$refs.file.files.item(0);
@@ -18,10 +16,8 @@ export default {
             } catch (e) {
 				this.errormsg = e.toString();
 			}
-			this.loading = false;
         },
         uploadImage: async function() {
-            this.loading = true;
 			this.errormsg = null;
 			try {
 				let formData = new FormData();
@@ -35,7 +31,6 @@ export default {
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
-			this.loading = false;
         }
     },
     mounted() {
@@ -45,7 +40,6 @@ export default {
 
 <template>
 	<div>
-		<SideMenu></SideMenu>
 
 		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
 			<div
@@ -56,7 +50,6 @@ export default {
 			</div>
 
 			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-			<LoadingSpinner v-if="loading"></LoadingSpinner>
 
 			<div class="mb-3">
 				<label for="description" class="form-label">Insert your photo</label>
@@ -64,10 +57,10 @@ export default {
 			</div>
 
 			<div>
-				<button style="width:200px" v-if="!loading && previewImage!=undefined" type="button" class="btn btn-success" @click="uploadImage">
+				<button style="width:200px" v-if="previewImage!=undefined" type="button" class="btn btn-success" @click="uploadImage">
 					Upload!
 				</button>
-				<LoadingSpinner v-if="loading"></LoadingSpinner>
+				<LoadingSpinner></LoadingSpinner>
 			</div>
 
 			<div v-if="previewImage">

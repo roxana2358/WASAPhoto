@@ -1,10 +1,11 @@
 <script>
 export default {
     methods: {
-		clearData: () => { localStorage.clear(); },
 		next: async function() { this.$router.replace("/login"); }
     },
-	mounted() { this.clearData(); }
+	mounted() { 
+		localStorage.clear(); 
+	}
 }
 </script>
 

@@ -3,7 +3,6 @@ export default {
 	data: function() {
 		return {
 			errormsg: null,
-			loading: false,
 			profile: null,
 			posts: []
 		}
@@ -13,7 +12,6 @@ export default {
 			this.$router.push("/settings");
 		},
 		getProfile: async function() {
-			this.loading = true;
 			this.errormsg = null;
 			try {
 				// get profile
@@ -27,7 +25,6 @@ export default {
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
-			this.loading = false;
 		},
 		deletePhoto: async function(photoId) {
 			try {
@@ -48,7 +45,6 @@ export default {
 
 <template>
 	<div>
-		<SideMenu></SideMenu>
 
 		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
 			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -64,13 +60,12 @@ export default {
 			</div>
 
 			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-			<LoadingSpinner v-if="loading"></LoadingSpinner>
 
 			<div v-if="profile">
 				<UserProfile class="card mb-3" style="margin: auto;" v-bind:profile="profile" v-bind:key="profile"></UserProfile>
 				
 				<div v-for="post in posts" v-bind:key="post" style="display: flex; align-items: center; justify-content: space-between;">
-					<UserPost v-bind:post="post" @notifyError="displayError($event)"></UserPost>
+					<UserPost v-bind:post="post"></UserPost>
 					<button @click="deletePhoto(post.photoId)">Delete</button>
 				</div>
 			</div>

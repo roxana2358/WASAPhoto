@@ -15,11 +15,6 @@ export default {
 			posts : [],
 			photos : []
 		}
-    },
-    methods: {
-        notifyError: async function(e) {
-            this.$emit(e);
-        }
     }
 }
 </script>

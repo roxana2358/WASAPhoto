@@ -37,12 +37,8 @@ export default {
                     this.liked = this.likes.includes(Number(localStorage.getItem("token")));
                 }
 			} catch (e) {
-				//this.notifyError(e);
-                console.log(e);
+				alert(e);
 			}
-        },
-        notifyError: async function(e) {
-            this.$emit(e)
         },
         commentPhoto: async function() {
             try {
@@ -53,10 +49,10 @@ export default {
                 let res = await this.$axios.post(`/posts/${this.photoId}/comments`, {
                     comment : this.newComment
                 });
+                this.newComment = null;
                 this.refresh();
             } catch(e) {
-                //this.notifyError(e);
-                console.log(e);
+                alert(e);
             }
         },
         deleteComment: async function(comId) {
@@ -64,8 +60,7 @@ export default {
                 await this.$axios.delete(`/posts/${this.photoId}/comments/${comId}`);
                 this.refresh();
             } catch(e) {
-                //this.notifyError(e);
-                console.log(e);
+                alert(e);
             }
         },
         likePhoto: async function() {
@@ -73,8 +68,7 @@ export default {
                 let res = await this.$axios.put(`/posts/${this.photoId}/likes/${localStorage.getItem("token")}`);
                 this.refresh();
             } catch(e) {
-                //this.notifyError(e);
-                console.log(e);
+                alert(e);
             }
         },
         unlikePhoto: async function() {
@@ -82,8 +76,7 @@ export default {
                 await this.$axios.delete(`/posts/${this.photoId}/likes/${localStorage.getItem("token")}`);
                 this.refresh();
             } catch(e) {
-                //this.notifyError(e);
-                console.log(e);
+                alert(e);
             }
         },
         refresh: async function() {
@@ -98,8 +91,7 @@ export default {
                     this.liked = this.likes.includes(Number(localStorage.getItem("token")));
                 }
             } catch(e) {
-                //this.notifyError(e);
-                console.log(e);
+                alert(e);
             }
         }
     },

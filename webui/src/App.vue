@@ -1,7 +1,25 @@
 <script setup>
 </script>
 <script>
-export default {}
+export default {
+	data() {
+		return {
+			logged_in : false
+		}
+	},
+	methods : {
+		logIn() {
+			this.logged_in = true;
+			this.$router.push("/home");
+		},
+		logOut() {
+			this.logged_in = false;
+			localStorage.clear();
+			sessionStorage.clear();
+			this.$router.push("/");
+		}
+	}
+}
 </script>
 
 <template>
@@ -13,9 +31,47 @@ export default {}
 			</button>
 		</header>
 
-		<main>
-			<RouterView />
-		</main>
+		<div class="container-fluid row">
+			<div class="row">
+				<nav v-if="logged_in" v-bind:key="logged_in" id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+					<div class="position-sticky pt-3 sidebar-sticky">
+						<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+							<span>General</span>
+						</h6>
+						<ul class="nav flex-column">
+							<li class="nav-item">
+								<RouterLink to="/home" class="nav-link">
+									<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#home"/></svg>
+									Home
+								</RouterLink>
+							</li>
+							<li class="nav-item">
+								<RouterLink to="/search" class="nav-link">
+									<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#eye"/></svg>
+									Search user
+								</RouterLink>
+							</li>
+							<li class="nav-item">
+								<RouterLink to="/profile" class="nav-link">
+									<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#smile"/></svg>
+									Personal profile
+								</RouterLink>
+							</li>
+							<li class="nav-item">
+								<RouterLink to="/uploadPhoto" class="nav-link">
+									<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#plus-circle"/></svg>
+									Upload photo
+								</RouterLink>
+							</li>
+						</ul>
+					</div>
+				</nav>
+
+				<main>
+					<RouterView />
+				</main>
+			</div>
+		</div>
 	</div>
 </template>
 

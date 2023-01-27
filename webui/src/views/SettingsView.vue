@@ -3,7 +3,6 @@ export default {
 	data: function() {
 		return {
 			errormsg: null,
-			loading: false,
 			token: null,
 			oldUsername: localStorage.getItem("username"),
 			newUsername: null,
@@ -11,7 +10,6 @@ export default {
 	},
 	methods: {
 		changeUsername: async function () {
-			this.loading = true;
 			this.errormsg = null;
 			try {
 				this.token = localStorage.getItem("token");
@@ -23,7 +21,6 @@ export default {
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
-			this.loading = false;
 		}
 	}
 }
@@ -31,7 +28,6 @@ export default {
 
 <template>
 	<div>
-		<SideMenu></SideMenu>
 
 		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
 			<div
@@ -41,7 +37,6 @@ export default {
 
 			<div style="align-items: center;">
 				<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-				<LoadingSpinner v-if="loading"></LoadingSpinner>
 
 				<div class="card text-center" style="width:fit-content; margin: auto;">
 					<div class="card-body">
@@ -49,7 +44,7 @@ export default {
 						<p class="card-text">Insert your new username: </p>
 						<input style="width:200px; margin: auto;" type="string" class="form-control" id="Username" v-model="newUsername">
 						<p></p>
-						<button style="width:200px" v-if="!loading" type="button" class="btn btn-primary" @click="changeUsername">OK!</button>
+						<button style="width:200px" type="button" class="btn btn-primary" @click="changeUsername">OK!</button>
 					</div>
 				</div>
 			</div>

@@ -19,7 +19,7 @@ export default {
 				});
 				localStorage.setItem('username', this.username);
 				localStorage.setItem('token', res.data.id);
-				this.$router.replace("/home");
+				this.$root.logIn();
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
