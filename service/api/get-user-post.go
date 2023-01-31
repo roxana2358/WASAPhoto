@@ -45,8 +45,7 @@ func (rt *_router) getUserPost(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// send output to user
-	var userPost Userpost
-	userPost.UserPostFromDatabase(dbUserPost)
+	userPost := NewUserPostFromDatabase(dbUserPost)
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(userPost)
 }

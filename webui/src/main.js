@@ -8,6 +8,7 @@ import UserProfile from './components/UserProfile.vue'
 
 import './assets/dashboard.css'
 import './assets/main.css'
+import './assets/style.css'
 
 const app = createApp(App)
 app.config.globalProperties.$axios = axios;

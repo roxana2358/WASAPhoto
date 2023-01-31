@@ -48,7 +48,4 @@ export default {
 </template>
 
 <style>
-#usernameChange {
-	height: fit-content;
-}
 </style>

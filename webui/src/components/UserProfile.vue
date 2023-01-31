@@ -43,13 +43,4 @@ export default {
 </template>
 
 <style>
-.profileSection {
-	display: flex; 
-	align-items: center; 
-	justify-content: space-between;
-	line-height: 18px;
-}
-#profileBody h3 {
-	text-align: center;
-}
 </style>

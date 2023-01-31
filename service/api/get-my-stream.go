@@ -52,10 +52,8 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// send output to user
 	var userStream []Userpost
-	var userPost Userpost
 	for i := 0; i < len(dbUserStream); i++ {
-		userPost.UserPostFromDatabase(dbUserStream[i])
-		userStream = append(userStream, userPost)
+		userStream = append(userStream, NewUserPostFromDatabase(dbUserStream[i]))
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(userStream)

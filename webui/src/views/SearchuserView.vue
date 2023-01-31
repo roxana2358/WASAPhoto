@@ -29,6 +29,7 @@ export default {
 					let res3 = await this.$axios.get(`posts/${this.profile.posts[i]}`, null);
 					this.posts[i] = res3.data;
 				}
+				this.posts.reverse();
 				this.setButtons();
 			} catch (e) {
 				this.errormsg = e.toString();
@@ -128,36 +129,4 @@ export default {
 </template>
 
 <style>
-.actionButton {
-	width: 10rem;
-	height: 35px;
-	border: 1px solid black;
-}
-#searchBox {
-	display: flex; 
-	align-items: center; 
-	justify-content: space-between;
-}
-#profileInfo {
-	padding: 1%;
-}
-#interactionButtons {
-	display: flex; 
-	align-items: center; 
-	justify-content: space-between;
-}
-button[class~="success"] {
-	margin: 1%;
-	width: 100%;
-}
-button[class~="success"]:hover {
-	background-color: green;
-}
-button[class~="danger"] {
-	margin: 1%;
-	width: 100%;
-}
-button[class~="danger"]:hover {
-	background-color: red;
-}
 </style>

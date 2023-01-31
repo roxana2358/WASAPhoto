@@ -69,11 +69,4 @@ export default {
 </template>
 
 <style>
-#uploadPhoto {
-	display: block;
-}
-#previewImage {
-	text-align: center;
-	margin: 1%;
-}
 </style>

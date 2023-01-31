@@ -46,43 +46,4 @@ export default {
 </template>
 
 <style>
-#loginPage {
-	margin: 150px; 
-	text-align: center;
-}
-#loginTitle {
-	color: #34495E;
-	font-size: 70px;
-	font-weight: bolder;
-	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-	margin: 40px;
-}
-.formCard {
-	border-color: #34495E;
-	border-width: 2px;
-	border-style: solid;
-	border-radius: 10px;
-	width: 400px;
-	height: 200px;
-	margin: auto;
-}
-.formCard h5 {
-	margin: 5%;
-	color: #34495E;
-	font-size: 20px;
-	text-align: center;
-}
-.formCard input {
-	margin: 5%;
-	width: 90%;
-	position: static;
-}
-.formCard button {
-	margin: 5%;
-	width: 90%;
-	position: static;
-	color:white;
-	background-color: #34495E;
-	text-align: center;
-}
 </style>

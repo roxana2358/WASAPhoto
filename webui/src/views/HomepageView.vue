@@ -14,6 +14,7 @@ export default {
 			try {
 				let res = await this.$axios.get("/users/" + localStorage.getItem('token') + "/stream", null);
 				this.stream = res.data;
+				console.log(res.data);
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -63,23 +64,4 @@ export default {
 </template>
 
 <style>
-.pageTitle {
-	color:#34495E;
-}
-.myButton {
-	color:#34495E;
-	background-color: #EDFFFF;
-	border-width: 1px;
-	border-color: #34495E;
-	border-radius: 0.375rem;
-	padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-}
-.myButton:hover {
-	background-color: #34495E;
-	color: #EDFFFF;
-}
-.myButton:visited {
-	color:#34495E;
-	background-color: #EDFFFF;
-}
 </style>

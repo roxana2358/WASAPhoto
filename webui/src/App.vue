@@ -74,13 +74,4 @@ export default {
 </template>
 
 <style>
-#header {
-	background-color: #34495E;
-}
-#header a {
-	text-align: center;
-}
-#sidebarMenu {
-	background-color: #EDFFFF;
-}
 </style>

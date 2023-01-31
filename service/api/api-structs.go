@@ -95,18 +95,20 @@ func (u *Userprofile) UserProfileFromDatabase(userprofile database.Userprofile) 
 /**
 * UserPostFromDatabase populates the struct with data from the database, overwriting all values.
  */
-func (u *Userpost) UserPostFromDatabase(userpost database.Userpost) {
+func NewUserPostFromDatabase(userpost database.Userpost) Userpost {
+	var u Userpost
 	u.UserID = userpost.UserID
 	u.Username = userpost.Username
 	u.PostID = userpost.PostID
 	u.Date = userpost.Date
 	u.Time = userpost.Time
 	u.Likes = userpost.Likes
+	var com CommentOBJ
 	for i := 0; i < len(userpost.Comments); i++ {
-		var com CommentOBJ
 		com.CommentFromDatabase(userpost.Comments[i])
 		u.Comments = append(u.Comments, com)
 	}
+	return u
 }
 
 /**

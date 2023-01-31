@@ -83,19 +83,4 @@ export default {
 </template>
 
 <style>
-.profile {
-	width: 100%;
-	height: fit-content;
-	padding: 1%;
-	background-color: #EDFFFF;
-}
-.post {
-	width: 100%;
-	height: 400px;
-	padding: 1%;
-	margin-top: 1%;
-}
-#deletePost {
-	border-style: none;
-}
 </style>

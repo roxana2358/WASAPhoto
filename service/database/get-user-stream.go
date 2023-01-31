@@ -25,6 +25,10 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 	defer func() { _ = rows.Close() }()
 
 	// Here we read the resultset and we build the list to be put in userStream
+	var likeId uint64
+	var likes []uint64
+	var comment CommentOBJ
+	var comments []CommentOBJ
 	for rows.Next() {
 		err = rows.Scan(&userPost.UserID, &userPost.Username, &userPost.PostID, &userPost.Date, &userPost.Time)
 		if err != nil {
@@ -41,8 +45,6 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 			userPost.Likes = nil
 		} else if err == nil {
 			// likes
-			var likeId uint64
-			var likes []uint64
 			for l.Next() {
 				e := l.Scan(&likeId)
 				if e != nil {
@@ -54,6 +56,7 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 				return userStream, err
 			}
 			userPost.Likes = likes
+			likes = nil
 		} else if err != nil {
 			// other error
 			return userStream, err
@@ -70,8 +73,6 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 			userPost.Comments = nil
 		} else if err == nil {
 			// comments
-			var comment CommentOBJ
-			var comments []CommentOBJ
 			for c.Next() {
 				err = c.Scan(&comment.Username, &comment.UserID, &comment.Comment, &comment.CommentId)
 				if err != nil {
@@ -83,6 +84,7 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 				return userStream, err
 			}
 			userPost.Comments = comments
+			comments = nil
 		} else if err != nil {
 			// other error
 			return userStream, err
