@@ -13,6 +13,10 @@ export default {
 	methods: {
 		getUser: async function () {
 			this.errormsg = null;
+			if (this.username===localStorage.getItem("username")) {
+				this.errormsg = "Why would you ask for your own profile?";
+				return;
+			}
 			try {
 				let res1 = await this.$axios.get("/users", {
 					params: {
@@ -80,49 +84,44 @@ export default {
 				this.errormsg = e;
 			}
 		}
+	},
+	mounted() {
+		this.$root.logIn();
 	}
 }
 </script>
 
 <template>
-	<div>
-		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
-			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#eye"/></svg>
-				<h1 class="h2">Search profile</h1>
-				<div></div>
+	<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
+		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#eye"/></svg>
+			<h1 class="h2 title">Search profile</h1>
+			<div></div>
+		</div>
+
+		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+
+		<div>
+			<div id="searchBox">
+				<div class="formCard">
+					<h5 class="card-title">Insert username:</h5>
+					<input type="string" class="form-control" v-model="username" placeholder="Username">
+					<button type="button" class="btn" @click="getUser">Search</button>
+				</div>
+
+				<div id="profileInfo" class="formCard" v-if="profile">
+					<UserProfile v-bind:profile="profile" v-bind:key="profile" @refresh="refresh"></UserProfile>
+					<div id="interactionButtons">
+						<button v-show="followButton && banButton" class="myButton success" @click="followUser(profile.id)">Follow</button>
+						<button v-show="!followButton" class="myButton danger" @click="unfollowUser(profile.id)">Unfollow</button>
+						<button v-show="banButton" class="myButton danger" @click="banUser(profile.id)">Ban</button>
+						<button v-show="!banButton" class="myButton success" @click="unbanUser(profile.id)">Unban</button>
+					</div>
+				</div>
 			</div>
 
-			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-
-			<div>
-				<div style="display: flex; align-items: center; justify-content: space-between;">
-					<div class="card text-center searchBar">
-						<div class="card-body">
-							<p></p>
-							<p class="card-text">Insert username: </p>
-							<input style="margin: auto" type="string" class="form-control" v-model="username">
-							<p></p>
-							<button style="margin:auto; width: 100%;" type="button" class="btn btn-primary" @click="getUser">Search</button>
-						</div>
-					</div>
-
-					<div class="card searchBar" v-if="profile" style="margin: auto;">
-						<UserProfile v-bind:profile="profile" v-bind:key="profile" @refresh="refresh"></UserProfile>
-						<div style="display: flex; align-items: center; justify-content: space-between;">
-							<a v-show="followButton && banButton" class="actionButton btn btn-success" @click="followUser(profile.id)">Follow</a>
-							<a v-show="!followButton" class="actionButton btn btn-danger" @click="unfollowUser(profile.id)">Unfollow</a>
-							<a v-show="banButton" class="actionButton btn btn-success" @click="banUser(profile.id)">Ban</a>
-							<a v-show="!banButton" class="actionButton btn btn-danger" @click="unbanUser(profile.id)">Unban</a>
-						</div>
-					</div>
-				</div>
-
-				<p></p>
-
-				<div v-if="profile && banButton">
-					<UserPost v-for="post in posts" v-bind:post="post" v-bind:key="post"></UserPost>
-				</div>
+			<div v-if="profile && banButton">
+				<UserPost v-for="post in posts" v-bind:post="post" v-bind:key="post"></UserPost>
 			</div>
 		</div>
 	</div>
@@ -134,9 +133,31 @@ export default {
 	height: 35px;
 	border: 1px solid black;
 }
-.searchBar {
-	height: 200px;
-	width: 300px;
-	margin: auto;
+#searchBox {
+	display: flex; 
+	align-items: center; 
+	justify-content: space-between;
+}
+#profileInfo {
+	padding: 1%;
+}
+#interactionButtons {
+	display: flex; 
+	align-items: center; 
+	justify-content: space-between;
+}
+button[class~="success"] {
+	margin: 1%;
+	width: 100%;
+}
+button[class~="success"]:hover {
+	background-color: green;
+}
+button[class~="danger"] {
+	margin: 1%;
+	width: 100%;
+}
+button[class~="danger"]:hover {
+	background-color: red;
 }
 </style>

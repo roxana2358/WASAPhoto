@@ -43,7 +43,7 @@ export default {
         commentPhoto: async function() {
             try {
                 if (this.newComment==null) {
-                    alert("Non e un commento");
+                    alert("Your comment is not a real comment!");
                     return;
                 }
                 let res = await this.$axios.post(`/posts/${this.photoId}/comments`, {
@@ -102,42 +102,125 @@ export default {
 </script>
 
 <template>
-
-    <div v-if="post!=null" class="card mb-3">
-        <div class="row g-0">
-            <div class="col-md-4">
-                <img v-bind:src="photo" class="img-fluid rounded-start" alt="photo">
-            </div>
-            <div class="col-md-8">
-                <div class="card-body">
-                    <div class="postSection">
-                        <h5 class="card-title">{{ username }}</h5>
-                        <button v-if="!liked" @click="likePhoto">Like</button>
-                        <button v-else style="background-color:red;" @click="unlikePhoto">Like</button>
-                        <p>#likes: {{ likes==null ? 0 : likes.length }}</p>
-                    </div>
-                    <p></p>
-                    <div class="postSection" v-for="com in comments" :key="com">
-                        <p><strong>{{ com.username }}:</strong> {{ com.comment }}</p>
-                        <button v-if="com.userId==token" @click="deleteComment(com.commentId)">Delete</button>
-                    </div>
-                    <div>
-                        <input style="width:391px;" v-model="newComment" placeholder="Write your comment here...">
-                        <button @click="commentPhoto">OK!</button>
-                    </div>
-                    <p></p>
-                    <p class="postSection"><small class="text-muted">Post from {{ time }} of {{ date }}</small></p>
+    <div class="formCard post" id="postContainer" v-if="post!=null">
+        <div id="postImage">
+            <img v-bind:src="photo" class="img-fluid rounded-start" alt="photo">
+        </div>
+        <div id="postInteractive">
+            <div class="parallelSection">
+                <h5 class="card-title">{{ username }}</h5>
+                <div class="parallelSection">
+                    <img width="17" height="17" src="/comment.png">
+                    <h5 class="postInfo">{{ comments==null ? 0 : comments.length }}</h5>
+                    <a v-if="!liked" @click="likePhoto">
+                        <img width="20" height="20" src="/like-empty.png">
+                    </a>
+                    <a v-else @click="unlikePhoto">
+                        <img width="20" height="20" src="/like-full.png">
+                    </a>
+                    <h5 class="postInfo">{{ likes==null ? 0 : likes.length }}</h5>
                 </div>
             </div>
+
+            <hr>
+
+            <div class="comments" v-if="comments!=null">
+                <div class="parallelSection comment" v-for="com in comments" :key="com">
+                    <span><strong>{{ com.username }}:</strong> {{ com.comment }}</span>
+                    <button type="button" class="btn" v-if="com.userId==token" @click="deleteComment(com.commentId)">Delete</button>
+                </div>
+            </div>
+
+            <div class="parallelSection" v-if="comments==null">
+                <p>Be the first to comment!</p>
+            </div>
+
+            <hr>
+
+            <div class="parallelSection newComment">
+                <input type="string" class="form-control" v-model="newComment" placeholder="Write your comment here...">
+                <button type="button" class="btn" @click="commentPhoto">Send</button>
+            </div>
+
+            <p class="parallelSection"><small class="text-muted">Posted on {{ time }} of {{ date }}</small></p>
+
         </div>
     </div>
-
 </template>
 
 <style>
-.postSection {
+#postContainer {
     display: flex; 
     align-items: center; 
     justify-content: space-between;
+    height: fit-content;
+}
+#postContainer p {
+    font-size: 15px;
+}
+#postImage {
+    width: 500px;
+    height: 368px;
+    border-width: 1px;
+    border-color: #34495E;
+    border-style: solid;
+    border-radius: 2%;
+    padding: 1%;
+}
+#postImage img {
+    max-height: 100%;
+    width: 100%;
+}
+.parallelSection {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    max-width: 100%;
+}
+.parallelSection h5 {
+    text-decoration: underline;
+    font-size: 25px;
+    margin: 1%;
+}
+#postInteractive {
+    width: 100%;
+    padding-left: 1%;
+}
+h5[class~="postInfo"] {
+    text-decoration: none;
+}
+.comments {
+    max-height: 210px;
+    padding-left: 2%;
+    overflow: auto;
+}
+.comments button {
+    width: fit-content;
+    padding: 0% 1%;
+    margin: 1%;
+    /*
+    width: fit-content;
+    padding: 0%;
+    margin: 0%;
+    border-style: none;
+    background-color: transparent;
+    color:#34495E;*/
+}
+.comments button:hover {
+    /*color: red;*/
+    color: black;
+    background-color: red;
+    border-color: red;
+}
+.comment {
+    height: fit-content;
+}
+.newComment button {
+    width: fit-content;
+    margin: 0%;
+}
+.newComment input {
+    background-color: #EDFFFF;
+    margin: 0%;
 }
 </style>

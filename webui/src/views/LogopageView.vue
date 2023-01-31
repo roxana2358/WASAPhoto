@@ -10,15 +10,15 @@ export default {
 </script>
 
 <template>
-	<div style="margin: 150px; text-align: center;">
-		<div>
-			<h1 style="color:dodgerblue; font-weight: bold; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">WELCOME TO</h1>
+	<div id="logoPage">
+		<div id="greeting">
+			<h1>WELCOME TO</h1>
 		</div>
-		<div>
-			<img src="/logo1.png" alt="logo">
+		<div id="logo">
+			<img src="/logo.png" alt="logo">
 		</div>
-		<div>
-			<button style="width:500px" type="button" class="btn btn-primary" @click="next">
+		<div id="login">
+			<button type="button" class="btn" @click="next">
 				Log in
 			</button>
 		</div>
@@ -26,4 +26,24 @@ export default {
 </template>
 
 <style>
+#logoPage {
+	margin: 100px; 
+	text-align: center;
+}
+#greeting h1 {
+	color: #34495E;
+	font-size: 70px;
+	font-weight: bolder;
+	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+	margin: 20px;
+}
+#logo {
+	margin: 50px;
+}
+#login button {
+	width: 500px;
+	margin: 20px;
+	background-color:#34495E;
+	color:white;
+}
 </style>

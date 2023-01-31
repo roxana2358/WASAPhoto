@@ -58,6 +58,9 @@ func (db *appdbimpl) GetUserPost(userID uint64, postID uint64) (Userpost, error)
 			}
 			likes = append(likes, likeId)
 		}
+		if err = l.Err(); err != nil {
+			return userPost, err
+		}
 		userPost.Likes = likes
 	} else if err != nil {
 		// other error
@@ -83,6 +86,9 @@ func (db *appdbimpl) GetUserPost(userID uint64, postID uint64) (Userpost, error)
 				return userPost, err
 			}
 			comments = append(comments, comment)
+		}
+		if err = c.Err(); err != nil {
+			return userPost, err
 		}
 		userPost.Comments = comments
 	} else if err != nil {

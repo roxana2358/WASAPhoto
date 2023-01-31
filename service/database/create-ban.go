@@ -1,5 +1,10 @@
 package database
 
+import (
+	"database/sql"
+	"errors"
+)
+
 /**
 * Adds new ban to database; returns error if the request is unsuccessfull.
  */
@@ -34,9 +39,13 @@ func (db *appdbimpl) CreateBan(userID uint64, banID uint64) error {
 	if err != nil {
 		return err
 	}
-	// delete follow if banned
+	// delete follows
 	_, err = db.c.Exec(`DELETE FROM Following WHERE UserId=? AND FollowingId=?`, userID, banID)
-	if err != nil {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return err
+	}
+	_, err = db.c.Exec(`DELETE FROM Following WHERE UserId=? AND FollowingId=?`, banID, userID)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return err
 	}
 

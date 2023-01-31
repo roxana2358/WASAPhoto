@@ -4,7 +4,8 @@ export default {
 		return {
 			errormsg: null,
 			profile: null,
-			posts: []
+			posts: [],
+			trashIcon: "/trash.png"
 		}
 	},
 	methods: {
@@ -22,56 +23,79 @@ export default {
 					let res2 = await this.$axios.get(`posts/${this.profile.posts[i]}`, null);
 					this.posts[i] = res2.data;
 				}
+				this.posts.reverse();
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
 		},
 		deletePhoto: async function(photoId) {
 			try {
-				console.log(photoId);
 				await this.$axios.delete(`posts/${photoId}`);
 				this.posts = [];
+				this.trashIcon = "/trash.png";
 				this.getProfile();
 			} catch(e) {
 				this.errormsg = e.toString();
 			}
+		},
+		changeIcon() {
+			if (this.trashIcon == "/trash.png") {
+				this.trashIcon = "/delete.png";
+			} else {
+				this.trashIcon = "/trash.png";
+			}
 		}
 	},
 	mounted() {
+		this.$root.logIn();
 		this.getProfile();
 	}
 }
 </script>
 
 <template>
-	<div>
-
-		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
-			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#smile"/></svg>
-				<h1 class="h2">Personal profile</h1>
-				<div class="btn-toolbar mb-2 mb-md-0">
-					<div class="btn-group me-2">
-						<button type="button" class="btn btn-sm btn-outline-info" @click="changeUsernamePage">
-							Change username
-						</button>
-					</div>
+	<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
+		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#smile"/></svg>
+			<h1 class="h2 pageTitle">Personal profile</h1>
+			<div class="btn-toolbar mb-2 mb-md-0">
+				<div class="btn-group me-2">
+					<button type="button" class="myButton" @click="changeUsernamePage">
+						Change username
+					</button>
 				</div>
 			</div>
+		</div>
 
-			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 
-			<div v-if="profile">
-				<UserProfile class="card mb-3" style="margin: auto;" v-bind:profile="profile" v-bind:key="profile"></UserProfile>
-				
-				<div v-for="post in posts" v-bind:key="post" style="display: flex; align-items: center; justify-content: space-between;">
-					<UserPost v-bind:post="post"></UserPost>
-					<button @click="deletePhoto(post.photoId)">Delete</button>
-				</div>
+		<div v-if="profile">
+			<UserProfile class="formCard profile" v-bind:profile="profile" v-bind:key="profile"></UserProfile>
+			
+			<div class="parallelSection" v-for="post in posts" v-bind:key="post">
+				<UserPost v-bind:post="post"></UserPost>
+				<button id="deletePost" @click="deletePhoto(post.photoId)" @mouseenter="changeIcon()" @mouseleave="changeIcon()">
+					<img width="30" height="30" :src=trashIcon>
+				</button>
 			</div>
 		</div>
 	</div>
 </template>
 
 <style>
+.profile {
+	width: 100%;
+	height: fit-content;
+	padding: 1%;
+	background-color: #EDFFFF;
+}
+.post {
+	width: 100%;
+	height: 400px;
+	padding: 1%;
+	margin-top: 1%;
+}
+#deletePost {
+	border-style: none;
+}
 </style>

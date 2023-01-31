@@ -20,6 +20,7 @@ export default {
 				localStorage.setItem('username', this.username);
 				localStorage.setItem('token', res.data.id);
 				this.$root.logIn();
+				this.$router.push("/home");
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -29,24 +30,59 @@ export default {
 </script>
 
 <template>
-	<div style="margin: 200px; text-align: center;">
-		<h1 
-			style="color:dodgerblue; font-weight:bold ;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">
+	<div id="loginPage">
+		<h1 id="loginTitle">
 			LOGIN PAGE
 		</h1>
 
 		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 
-		<div class="card text-center" style="width: 25rem; margin:auto;">
-  			<div class="card-body">
-    			<h5 class="card-title">Insert your username</h5>
-				<input type="string" class="form-control" v-model="username" placeholder="Username">
-				<p></p>
-    			<button type="button" class="btn btn-primary" @click="doLogin"> Login</button>
-  			</div>
+		<div class="formCard">
+			<h5 class="card-title">Insert your username:</h5>
+			<input type="string" class="form-control" v-model="username" placeholder="Username">
+			<button type="button" class="btn" @click="doLogin">Login</button>
 		</div>
 	</div>
 </template>
 
 <style>
+#loginPage {
+	margin: 150px; 
+	text-align: center;
+}
+#loginTitle {
+	color: #34495E;
+	font-size: 70px;
+	font-weight: bolder;
+	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+	margin: 40px;
+}
+.formCard {
+	border-color: #34495E;
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 10px;
+	width: 400px;
+	height: 200px;
+	margin: auto;
+}
+.formCard h5 {
+	margin: 5%;
+	color: #34495E;
+	font-size: 20px;
+	text-align: center;
+}
+.formCard input {
+	margin: 5%;
+	width: 90%;
+	position: static;
+}
+.formCard button {
+	margin: 5%;
+	width: 90%;
+	position: static;
+	color:white;
+	background-color: #34495E;
+	text-align: center;
+}
 </style>

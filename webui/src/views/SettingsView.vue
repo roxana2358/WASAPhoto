@@ -22,35 +22,33 @@ export default {
 				this.errormsg = e.toString();
 			}
 		}
+	},
+	mounted() {
+		this.$root.logIn();
 	}
 }
 </script>
 
 <template>
-	<div>
+	<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
+		<div
+			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<h1 class="h2 pageTitle">Change your username</h1>
+		</div>
 
-		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
-			<div
-				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h1 class="h2">Change your username</h1>
-			</div>
+		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 
-			<div style="align-items: center;">
-				<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-
-				<div class="card text-center" style="width:fit-content; margin: auto;">
-					<div class="card-body">
-						<p class="card-text">This is yout current username: {{ oldUsername }}</p>
-						<p class="card-text">Insert your new username: </p>
-						<input style="width:200px; margin: auto;" type="string" class="form-control" id="Username" v-model="newUsername">
-						<p></p>
-						<button style="width:200px" type="button" class="btn btn-primary" @click="changeUsername">OK!</button>
-					</div>
-				</div>
-			</div>
+		<div id="usernameChange" class="formCard">
+			<h5 class="card-text">This is your current username: <strong>{{ oldUsername }}</strong></h5>
+			<h5 class="card-text">Insert your new username: </h5>
+			<input type="string" class="form-control" v-model="newUsername" placeholder="Username">
+			<button type="button" class="btn" @click="changeUsername">OK!</button>
 		</div>
 	</div>
 </template>
 
 <style>
+#usernameChange {
+	height: fit-content;
+}
 </style>

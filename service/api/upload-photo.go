@@ -60,7 +60,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 	// check if directory (photo storage) exists, create if not
-	err = os.MkdirAll("tmp/photos/", 0777)
+	err = os.MkdirAll("/tmp/photos/", 0777)
 	if err != nil {
 		// error on our side: log the error and send a 500 to the user
 		ctx.Logger.WithError(err).Error("can't create dir")
@@ -68,7 +68,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 	// create file
-	fileName := "tmp/photos/" + strconv.FormatInt(int64(postId), 10) + ".png"
+	fileName := "/tmp/photos/" + strconv.FormatInt(int64(postId), 10) + ".png"
 	imgFile, err := os.Create(fileName)
 	if err != nil {
 		// error on our side: log the error and send a 500 to the user

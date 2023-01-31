@@ -19,6 +19,10 @@ export default {
         },
         uploadImage: async function() {
 			this.errormsg = null;
+			if (this.image == null || this.image == undefined) {
+				this.errormsg = "You did not choose a photo!";
+				return;
+			}
 			try {
 				let formData = new FormData();
 				formData.append("file", this.image)
@@ -34,43 +38,42 @@ export default {
         }
     },
     mounted() {
+		this.$root.logIn();
     }
 }
 </script>
 
 <template>
-	<div>
+	<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
+		<div
+			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#plus-circle"/></svg>
+			<h1 class="h2 pageTitle">Upload your photo</h1>
+			<div></div>
+		</div>
 
-		<div class="container-fluid row col-md-9 ms-sm-auto col-lg-10 px-md-2">
-			<div
-				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#plus-circle"/></svg>
-				<h1 class="h2">Upload your photo</h1>
-				<div></div>
+		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+
+		<div id="uploadPhoto">
+			<div class="formCard">
+				<h5 class="card-title">Choose your photo:</h5>
+				<input type="file" accept="image/*" ref="file" @change="selectImage">
+				<button type="button" class="btn" @click="uploadImage">Upload!</button>
 			</div>
 
-			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-
-			<div class="mb-3">
-				<label for="description" class="form-label">Insert your photo</label>
-				<input type="file" accept="image/png" ref="file" @change="selectImage">
-			</div>
-
-			<div>
-				<button style="width:200px" v-if="previewImage!=undefined" type="button" class="btn btn-success" @click="uploadImage">
-					Upload!
-				</button>
-				<LoadingSpinner></LoadingSpinner>
-			</div>
-
-			<div v-if="previewImage">
-				<div>
-					<img style="height:500px;" class="preview my-3" :src="previewImage" alt="" />
-				</div>
+			<div id="previewImage" v-if="previewImage">
+				<img height="400" class="preview" :src="previewImage" alt="" />
 			</div>
 		</div>
 	</div>
 </template>
 
 <style>
+#uploadPhoto {
+	display: block;
+}
+#previewImage {
+	text-align: center;
+	margin: 1%;
+}
 </style>

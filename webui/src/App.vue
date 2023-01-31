@@ -10,12 +10,10 @@ export default {
 	methods : {
 		logIn() {
 			this.logged_in = true;
-			this.$router.push("/home");
 		},
 		logOut() {
 			this.logged_in = false;
 			localStorage.clear();
-			sessionStorage.clear();
 			this.$router.push("/");
 		}
 	}
@@ -24,8 +22,8 @@ export default {
 
 <template>
 	<div>
-		<header class="navbar navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow">
-			<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" style="text-align: center;" href="/">WASA PHOTO</a>
+		<header id="header" class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow">
+			<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/">WASA PHOTO</a>
 			<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -33,8 +31,8 @@ export default {
 
 		<div class="container-fluid row">
 			<div class="row">
-				<nav v-if="logged_in" v-bind:key="logged_in" id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-					<div class="position-sticky pt-3 sidebar-sticky">
+				<nav v-if="logged_in" v-bind:key="logged_in" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+					<div id="sidebarMenu" class="position-sticky pt-3 sidebar-sticky">
 						<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
 							<span>General</span>
 						</h6>
@@ -76,4 +74,13 @@ export default {
 </template>
 
 <style>
+#header {
+	background-color: #34495E;
+}
+#header a {
+	text-align: center;
+}
+#sidebarMenu {
+	background-color: #EDFFFF;
+}
 </style>
