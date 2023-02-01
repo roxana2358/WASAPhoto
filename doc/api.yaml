@@ -175,13 +175,15 @@ tags:
   - name: "Login"
     description: Functions for logging in
   - name: "User"
-    description: Functions for user actions
+    description: Functions for user id, username and stream
   - name: "Following"
     description: Functions for the "following" list
   - name: "Ban"
     description: Functions for the "banned" list
   - name: "Post"
     description: Functions for the posts
+  - name: "Photo"
+    description: Functions for image upload/search/delete
     
 paths:
   /session:
@@ -193,6 +195,7 @@ paths:
         and an identifier is returned.
         If the user exists, the user identifier is returned.
       operationId: doLogin
+      security: []
       requestBody:
         description: User details
         content:
@@ -259,7 +262,7 @@ paths:
       tags: ["User"]
       summary: Updates username
       description: |-
-        If the username is available it uploads the old one; otherwise it notifies the user that the username is already used.
+        If the username is available it uploads the old one; otherwise it notifies the user that the username is already in use.
       operationId: setMyUserName
       requestBody:
         description: New username to replace the old one.
@@ -376,7 +379,7 @@ paths:
     summary: List of photos
     description: This is the lists of all photos
     get:
-      tags: ["Post"]
+      tags: ["Photo"]
       summary: Gets the raw image
       description: Gets the image requested
       operationId: getImage
@@ -384,7 +387,7 @@ paths:
         '200':
           description: Requested image
           content:
-            image/png:
+            image/*:
               schema:
                 description: Raw image
                 type: string
@@ -400,7 +403,7 @@ paths:
     summary: List of posts
     description: This is the list of all posts
     post:
-      tags: ["Post"]
+      tags: ["Photo"]
       summary: Uploads a photo
       description: Creates a new post
       operationId: uploadPhoto
@@ -443,7 +446,7 @@ paths:
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: '#/components/responses/InternalServerError' }
     delete:
-      tags: ["Post"]
+      tags: ["Photo"]
       summary: Deletes a photo
       description: Deletes the entire post from user's profile.
       operationId: deletePhoto

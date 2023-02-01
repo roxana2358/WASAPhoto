@@ -34,11 +34,13 @@ func (db *appdbimpl) CreateBan(userID uint64, banID uint64) error {
 	if row.Scan(&id) == nil {
 		return nil
 	}
+
 	// insert ban in database
 	_, err = db.c.Exec(`INSERT INTO Ban (UserId, BannedId) VALUES (?, ?)`, userID, banID)
 	if err != nil {
 		return err
 	}
+
 	// delete follows
 	_, err = db.c.Exec(`DELETE FROM Following WHERE UserId=? AND FollowingId=?`, userID, banID)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {

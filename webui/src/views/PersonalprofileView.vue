@@ -5,11 +5,11 @@ export default {
 			errormsg: null,
 			profile: null,
 			posts: [],
-			trashIcon: "/trash.png"
+			trashIcons: []
 		}
 	},
 	methods: {
-		changeUsernamePage: async function() {
+		changeUsernamePage() {
 			this.$router.push("/settings");
 		},
 		getProfile: async function() {
@@ -22,27 +22,28 @@ export default {
 				for (let i = 0; i<this.profile.numberOfPhotos; i++ ) {
 					let res2 = await this.$axios.get(`posts/${this.profile.posts[i]}`, null);
 					this.posts[i] = res2.data;
+					this.trashIcons[i] = "/trash.png";
 				}
 				this.posts.reverse();
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
 		},
-		deletePhoto: async function(photoId) {
+		deletePhoto: async function(photoId, index) {
 			try {
 				await this.$axios.delete(`posts/${photoId}`);
 				this.posts = [];
-				this.trashIcon = "/trash.png";
+				this.trashIcons[index] = "/trash.png";
 				this.getProfile();
 			} catch(e) {
 				this.errormsg = e.toString();
 			}
 		},
-		changeIcon() {
-			if (this.trashIcon == "/trash.png") {
-				this.trashIcon = "/delete.png";
+		changeIcon(index) {
+			if (this.trashIcons[index] == "/trash.png") {
+				this.trashIcons[index] = "/delete.png";
 			} else {
-				this.trashIcon = "/trash.png";
+				this.trashIcons[index] = "/trash.png";
 			}
 		}
 	},
@@ -74,8 +75,10 @@ export default {
 			
 			<div class="parallelSection" v-for="post in posts" v-bind:key="post">
 				<UserPost v-bind:post="post"></UserPost>
-				<button id="deletePost" @click="deletePhoto(post.photoId)" @mouseenter="changeIcon()" @mouseleave="changeIcon()">
-					<img width="30" height="30" :src=trashIcon>
+				<button id="deletePost" @click="deletePhoto(post.photoId, posts.indexOf(post))" 
+										@mouseenter="changeIcon(posts.indexOf(post))" 
+										@mouseleave="changeIcon(posts.indexOf(post))">
+					<img width="30" height="30" :src=trashIcons[posts.indexOf(post)]>
 				</button>
 			</div>
 		</div>

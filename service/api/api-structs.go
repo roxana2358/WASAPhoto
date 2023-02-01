@@ -93,7 +93,7 @@ func (u *Userprofile) UserProfileFromDatabase(userprofile database.Userprofile) 
 }
 
 /**
-* UserPostFromDatabase populates the struct with data from the database, overwriting all values.
+* UserPostFromDatabase creates a new struct with data from the database.
  */
 func NewUserPostFromDatabase(userpost database.Userpost) Userpost {
 	var u Userpost

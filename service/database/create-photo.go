@@ -1,7 +1,7 @@
 package database
 
 /**
-* Adds new photo to database; returns id or error if the request is unsuccessfull.
+* Adds new photo to database; returns (id, nil) if no errors occured.
  */
 func (db *appdbimpl) CreatePhoto(userID uint64, postId uint64, time string, date string, fileName string) (uint64, error) {
 	// INSERT photo in database

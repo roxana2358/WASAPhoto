@@ -15,7 +15,7 @@ func (db *appdbimpl) DeleteLike(userID uint64, postID uint64) error {
 	if err != nil {
 		return err
 	} else if affected == 0 {
-		return ErrPostNotFound
+		return ErrLikeNotFound
 	}
 	return nil
 }

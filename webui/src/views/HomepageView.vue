@@ -14,7 +14,6 @@ export default {
 			try {
 				let res = await this.$axios.get("/users/" + localStorage.getItem('token') + "/stream", null);
 				this.stream = res.data;
-				console.log(res.data);
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -52,8 +51,8 @@ export default {
 		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 
 		<div>
-			<div v-if="stream == null" class="card">
-				<div class="card-body">
+			<div v-if="stream == null">
+				<div class="formCard" id="noPosts">
 					<p>No posts to be shown.</p>
 				</div>
 			</div>

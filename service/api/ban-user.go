@@ -62,7 +62,7 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	} else if err != nil {
 		// error on our side: log the error and send a 500 to the user
-		ctx.Logger.WithError(err).Error("can't follow the user")
+		ctx.Logger.WithError(err).Error("can't ban the user")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

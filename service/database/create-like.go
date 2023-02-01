@@ -12,6 +12,13 @@ func (db *appdbimpl) CreateLike(userID uint64, postID uint64) error {
 		return ErrPostNotFound
 	}
 
+	// check if user exists
+	var username string
+	row = db.c.QueryRow(`SELECT Username FROM Users WHERE Id=?`, userID)
+	if row.Scan(&username) != nil {
+		return ErrUserNotFound
+	}
+
 	// check if user is banned
 	row = db.c.QueryRow(`SELECT BannedId FROM Ban WHERE UserId=? AND BannedId=?`, owner, userID)
 	var banned uint64
@@ -20,8 +27,8 @@ func (db *appdbimpl) CreateLike(userID uint64, postID uint64) error {
 		return ErrUserBanned
 	}
 
-	var id uint64
 	// check if already in database
+	var id uint64
 	row = db.c.QueryRow(`SELECT UserId FROM Likes WHERE UserId=? AND PostId=?`, userID, postID)
 	if row.Scan(&id) == nil {
 		return nil

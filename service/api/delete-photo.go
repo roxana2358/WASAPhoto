@@ -45,7 +45,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	} else if err != nil {
 		// error on our side: log the error and send a 500 to the user
-		ctx.Logger.WithError(err).WithField("postID", photoId).Error("can't delete image")
+		ctx.Logger.WithError(err).WithField("postID", photoId).Error("can't delete photo")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

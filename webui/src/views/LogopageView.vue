@@ -1,7 +1,7 @@
 <script>
 export default {
     methods: {
-		next: async function() { this.$router.replace("/login"); }
+		next() { this.$router.replace("/login"); }
     },
 	mounted() { 
 		localStorage.clear(); 

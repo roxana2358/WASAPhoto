@@ -11,9 +11,7 @@ export default {
 			numberOfPhotos : this.profile.numberOfPhotos,
 			followers : this.profile.followers,
 			following : this.profile.following,
-			banned : this.profile.banned,
-			posts : [],
-			photos : []
+			banned : this.profile.banned
 		}
     }
 }

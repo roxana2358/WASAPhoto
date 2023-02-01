@@ -3,7 +3,6 @@ export default {
 	data: function() {
 		return {
 			errormsg: null,
-			token: null,
 			oldUsername: localStorage.getItem("username"),
 			newUsername: null,
 		}
@@ -12,8 +11,7 @@ export default {
 		changeUsername: async function () {
 			this.errormsg = null;
 			try {
-				this.token = localStorage.getItem("token");
-				await this.$axios.put(`/users/${this.token}`, { 
+				await this.$axios.put(`/users/${localStorage.getItem("token")}`, { 
 						username: this.newUsername
 					}, null);
 				localStorage.setItem("username", this.newUsername);

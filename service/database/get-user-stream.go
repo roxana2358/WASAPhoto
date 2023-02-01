@@ -13,7 +13,7 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 	var userStream []Userpost
 	var userPost Userpost
 
-	// request posts
+	// request posts from following
 	rows, err := db.c.Query(`SELECT Users.Id, Users.Username, Posts.PostId, Posts.Date, Posts.Time
 							FROM Following 
 							INNER JOIN Posts ON Following.FollowingId=Posts.UserId
@@ -24,7 +24,7 @@ func (db *appdbimpl) GetUserStream(userID uint64) ([]Userpost, error) {
 	}
 	defer func() { _ = rows.Close() }()
 
-	// Here we read the resultset and we build the list to be put in userStream
+	// here we read the resultset and we build the list to be put in userStream
 	var likeId uint64
 	var likes []uint64
 	var comment CommentOBJ

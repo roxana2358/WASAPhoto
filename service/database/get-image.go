@@ -8,7 +8,7 @@ func (db *appdbimpl) GetImage(imageId uint64) (string, error) {
 	row := db.c.QueryRow(`SELECT Filename FROM Posts WHERE PostId=?`, imageId)
 	var filename string
 	if row.Scan(&filename) != nil {
-		return "", ErrFileNotFound
+		return "", ErrPostNotFound
 	}
 
 	return filename, nil

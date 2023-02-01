@@ -23,7 +23,7 @@ func (db *appdbimpl) UpdateUsername(id uint64, newUsername string) error {
 	if err != nil {
 		return err
 	} else if affected == 0 {
-		// if we didn't update any username, then the user didn't exist
+		// if it didn't update any username, then the user didn't exist
 		return ErrUserNotFound
 	}
 	return nil

@@ -8,7 +8,7 @@ export default {
         };
     },
     methods: {
-        selectImage: async function() {
+        selectImage() {
 			this.errormsg = null;
 			try {
                 this.image = this.$refs.file.files.item(0);

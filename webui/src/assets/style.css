@@ -49,6 +49,12 @@
 	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 	margin: 40px;
 }
+#noPosts {
+	width: 100%;
+	height: fit-content;
+	margin: auto;
+	padding: 1%;
+}
 .formCard {
 	border-color: #34495E;
 	border-width: 2px;
@@ -181,7 +187,6 @@ button[class~="danger"]:hover {
     display: flex; 
     align-items: center; 
     justify-content: space-between;
-    height: fit-content;
 }
 #postContainer p {
     font-size: 15px;

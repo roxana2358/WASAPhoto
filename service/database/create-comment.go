@@ -12,6 +12,13 @@ func (db *appdbimpl) CreateComment(userID uint64, postID uint64, comment string)
 		return 0, ErrPostNotFound
 	}
 
+	// check if user exists
+	var username string
+	row = db.c.QueryRow(`SELECT Username FROM Users WHERE Id=?`, userID)
+	if row.Scan(&username) != nil {
+		return 0, ErrUserNotFound
+	}
+
 	// check if user is banned
 	row = db.c.QueryRow(`SELECT BannedId FROM Ban WHERE UserId=? AND BannedId=?`, owner, userID)
 	var banned uint64

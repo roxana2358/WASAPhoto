@@ -16,7 +16,7 @@ import (
 * Gets the image requested.
  */
 func (rt *_router) getImage(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// token extraction; real token not necessary because if we received the postID user is allowed to request it
+	// token extraction
 	_, err := getHeaderToken(r)
 	if errors.Is(err, ErrUnauthorized) {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -38,7 +38,7 @@ func (rt *_router) getImage(w http.ResponseWriter, r *http.Request, ps httproute
 
 	// request the filename
 	filename, err := rt.db.GetImage(postId)
-	if errors.Is(err, database.ErrFileNotFound) {
+	if errors.Is(err, database.ErrPostNotFound) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

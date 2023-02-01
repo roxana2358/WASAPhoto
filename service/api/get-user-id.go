@@ -48,5 +48,7 @@ func (rt *_router) getUserId(w http.ResponseWriter, r *http.Request, ps httprout
 
 	// send output to user
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(id)
+	var identifier ID
+	identifier.Id = id
+	_ = json.NewEncoder(w).Encode(identifier)
 }

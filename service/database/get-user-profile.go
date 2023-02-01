@@ -5,6 +5,8 @@ package database
  */
 func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofile, error) {
 	var userProfile Userprofile
+	userProfile.Id = profileID
+
 	// check if user is banned
 	row := db.c.QueryRow(`SELECT UserId FROM Ban WHERE UserId=? AND BannedId=?`, profileID, userID)
 	var id int
@@ -16,8 +18,7 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 
 	// 1) find username
 	row = db.c.QueryRow(`SELECT Username FROM Users WHERE Id=?`, profileID)
-	var username string
-	if row.Scan(&username) != nil {
+	if row.Scan(&userProfile.Username) != nil {
 		return userProfile, ErrUserNotFound
 	}
 
@@ -50,7 +51,7 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 	var following []string
 	var followID uint64
 	var follow string
-	// Here we read the resultset and we build the list to be put in userProfile
+	// here we read the resultset and we build the list to be put in userProfile
 	for rows.Next() {
 		err = rows.Scan(&followID)
 		if err != nil {
@@ -77,7 +78,7 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 	var followers []string
 	var followerID uint64
 	var follower string
-	// Here we read the resultset and we build the list to be put in userProfile
+	// here we read the resultset and we build the list to be put in userProfile
 	for rows.Next() {
 		err = rows.Scan(&followerID)
 		if err != nil {
@@ -104,7 +105,7 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 	var banned []string
 	var bannedID uint64
 	var ban string
-	// Here we read the resultset and we build the list to be put in userProfile
+	// here we read the resultset and we build the list to be put in userProfile
 	for rows.Next() {
 		err = rows.Scan(&bannedID)
 		if err != nil {
@@ -123,8 +124,6 @@ func (db *appdbimpl) GetUserProfile(userID uint64, profileID uint64) (Userprofil
 	}
 
 	// 6) compose userProfile
-	userProfile.Id = profileID
-	userProfile.Username = username
 	userProfile.Photos = photoIds
 	userProfile.NumberOfPhotos = len(photoIds)
 	userProfile.Following = following

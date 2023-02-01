@@ -13,6 +13,8 @@ export default {
 	methods: {
 		getUser: async function () {
 			this.errormsg = null;
+			this.profile = null;
+			this.posts = [];
 			if (this.username===localStorage.getItem("username")) {
 				this.errormsg = "Why would you ask for your own profile?";
 				return;
@@ -23,7 +25,7 @@ export default {
 						username: this.username
 					},
 				});
-				let res2 = await this.$axios.get(`/users/${res1.data}`, null);
+				let res2 = await this.$axios.get(`/users/${res1.data.id}`, null);
 				this.profile = res2.data;
 				for (let i = 0; i<this.profile.numberOfPhotos; i++ ) {
 					let res3 = await this.$axios.get(`posts/${this.profile.posts[i]}`, null);
@@ -45,7 +47,7 @@ export default {
 				this.errormsg = e.toString();
 			}
 		},
-		async setButtons() {
+		setButtons() {
 			if (this.profile.followers == null) {
 				this.followButton = true;
 			} else { this.followButton = !this.profile.followers.includes(localStorage.getItem("username")); }

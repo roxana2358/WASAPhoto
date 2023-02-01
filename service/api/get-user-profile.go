@@ -35,7 +35,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	dbUserProfile, err := rt.db.GetUserProfile(token, userID)
+	dbUserProfile, err := rt.db.GetUserProfile(token, userID) // userProfile in db format
 	// check errors
 	if errors.Is(err, database.ErrUserNotFound) || errors.Is(err, database.ErrUserBanned) {
 		w.WriteHeader(http.StatusNotFound)

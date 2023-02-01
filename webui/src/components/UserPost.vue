@@ -21,7 +21,6 @@ export default {
     methods: {
         getPhoto: async function() {
             try {
-                // get photo
                 let res = await this.$axios.get(`photos/${this.photoId}`, {
                         responseType:  'arraybuffer',
                         headers: {
@@ -30,23 +29,18 @@ export default {
                 });
                 let blob = new Blob([res.data]);
                 this.photo= URL.createObjectURL(blob);
-                // set like button
-                if (this.likes == null) {
-                    this.liked = false;
-                } else {
-                    this.liked = this.likes.includes(Number(localStorage.getItem("token")));
-                }
+                this.setLikeButton();
 			} catch (e) {
 				alert(e);
 			}
         },
         commentPhoto: async function() {
             try {
-                if (this.newComment==null) {
+                if (this.newComment == null) {
                     alert("Your comment is not a real comment!");
                     return;
                 }
-                let res = await this.$axios.post(`/posts/${this.photoId}/comments`, {
+                await this.$axios.post(`/posts/${this.photoId}/comments`, {
                     comment : this.newComment
                 });
                 this.newComment = null;
@@ -65,7 +59,7 @@ export default {
         },
         likePhoto: async function() {
             try {
-                let res = await this.$axios.put(`/posts/${this.photoId}/likes/${localStorage.getItem("token")}`);
+                await this.$axios.put(`/posts/${this.photoId}/likes/${localStorage.getItem("token")}`);
                 this.refresh();
             } catch(e) {
                 alert(e);
@@ -79,17 +73,19 @@ export default {
                 alert(e);
             }
         },
+        setLikeButton() {
+            if (this.likes == null) {
+                this.liked = false;
+            } else {
+                this.liked = this.likes.includes(Number(localStorage.getItem("token")));
+            }
+        },
         refresh: async function() {
             try {
                 let res = await this.$axios.get(`posts/${this.photoId}`, null);
                 this.likes = res.data.likes;
                 this.comments = res.data.comments;
-                // set like button
-                if (this.likes == null) {
-                    this.liked = false;
-                } else {
-                    this.liked = this.likes.includes(Number(localStorage.getItem("token")));
-                }
+                this.setLikeButton();
             } catch(e) {
                 alert(e);
             }

@@ -9,10 +9,11 @@ import (
 * Removes image from database; returns error if the request is unsuccessfull.
  */
 func (db *appdbimpl) DeletePhoto(userID uint64, postID uint64) (string, error) {
-	// see if user is the owner of photo
-	row := db.c.QueryRow(`SELECT UserId FROM Posts WHERE PostId=?`, postID)
+	// get owner and filename of photo
 	var owner uint64
-	if row.Scan(&owner) != nil {
+	var filename string
+	row := db.c.QueryRow(`SELECT UserId, Filename FROM Posts WHERE PostId=?`, postID)
+	if row.Scan(&owner, &filename) != nil {
 		// if there is no row with the postID, the photo is not in database
 		return "", ErrPostNotFound
 	}
@@ -21,27 +22,18 @@ func (db *appdbimpl) DeletePhoto(userID uint64, postID uint64) (string, error) {
 		return "", ErrUnauthorized
 	}
 
-	// get filename
-	row = db.c.QueryRow(`SELECT Filename FROM Posts WHERE PostId=?`, postID)
-	var filename string
-	if row.Scan(&filename) != nil {
-		// if there is no row with the postID, the photo is not in database
-		return "", ErrPostNotFound
-	}
-
 	// delete all likes on post
 	_, err := db.c.Exec(`DELETE FROM Likes WHERE PostId=?`, postID)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return "", err
 	}
-
 	// delete all comments on post
 	_, err = db.c.Exec(`DELETE FROM Comments WHERE PostId=?`, postID)
 	if err != nil && errors.Is(err, sql.ErrNoRows) {
 		return "", err
 	}
 
-	// delete photo from database
+	// delete post from database
 	res, err := db.c.Exec(`DELETE FROM Posts WHERE PostId=?`, postID)
 	if err != nil {
 		return "", err

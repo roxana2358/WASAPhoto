@@ -6,7 +6,7 @@ import (
 )
 
 /**
-* Gets the filename of the image with imageId.
+* Gets the id for the new post.
  */
 func (db *appdbimpl) GetNextPostId() (uint64, error) {
 	// get next id
