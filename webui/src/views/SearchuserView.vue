@@ -42,6 +42,12 @@ export default {
 			try {
 				let res = await this.$axios.get(`/users/${this.profile.id}`, null);
 				this.profile = res.data;
+				this.posts = [];
+				for (let i = 0; i<this.profile.numberOfPhotos; i++ ) {
+					let res3 = await this.$axios.get(`posts/${this.profile.posts[i]}`, null);
+					this.posts[i] = res3.data;
+				}
+				this.posts.reverse();
 				this.setButtons();
 			} catch (e) {
 				this.errormsg = e.toString();
