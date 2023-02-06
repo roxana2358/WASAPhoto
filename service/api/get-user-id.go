@@ -26,7 +26,7 @@ func (rt *_router) getUserId(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	// The user ID in the path is a 64-bit unsigned integer
+	// username should be in URL
 	if !r.URL.Query().Has("username") {
 		// username is missing
 		w.WriteHeader(http.StatusBadRequest)

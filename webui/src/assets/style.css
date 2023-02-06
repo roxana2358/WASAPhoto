@@ -199,10 +199,11 @@ button[class~="danger"]:hover {
     border-style: solid;
     border-radius: 2%;
     padding: 1%;
+	text-align: center;
 }
 #postImage img {
     max-height: 100%;
-    width: 100%;
+    max-width: 100%;
 }
 .parallelSection {
     display: flex; 
