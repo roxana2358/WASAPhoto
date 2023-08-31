@@ -1,9 +1,9 @@
-# WASAPhoto
+### WASAPhoto
 
 Keep in touch with your friends by sharing photos of special moments, thanks to WASAPhoto! You can
 upload your photos directly from your PC, and they will be visible to everyone following you.
 
-# Functional design specifications
+## Functional design specifications
 
 Each user will be presented with a stream of photos (images) in reverse chronological order, with
 information about when each photo was uploaded (date and time) and how many likes and comments
@@ -18,3 +18,21 @@ Users can change their usernames, upload photos, remove photos, and follow/unfol
 Removal of an image will also remove likes and comments.
 A user can search other user profiles via username.
 A user can log in just by specifying the username. 
+
+## How to run  (in development mode)
+For backend run the following:
+go run ./cmd/webapi/
+
+For frontend run in new terminal:
+./open-npm.sh
+# inside the container
+npm run dev
+
+## How to run (with containers)
+# first step : build the images
+docker build -t wasa-photos-backend:latest -f Dockerfile.backend .
+docker build -t wasa-photos-frontend:latest -f Dockerfile.frontend .
+
+# second step: run the container images
+docker run -it --rm -p 3000:3000 wasa-photos-backend:latest
+docker run -it --rm -p 8081:80 wasa-photos-frontend:latest
