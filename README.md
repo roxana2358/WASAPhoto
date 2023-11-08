@@ -21,16 +21,30 @@ A user can log in just by specifying the username.
 
 ## How to run  (in development mode)
 
-For backend run the following: go run ./cmd/webapi/
+For backend run the following
+~~~
+go run ./cmd/webapi/
+~~~
 
-For frontend run in new terminal: ./open-npm.sh and then inside the container npm run dev
+For frontend run in new terminal
+~~~
+./open-npm.sh
+~~~
+and then inside the container
+~~~
+npm run dev
+~~~
 
 ## How to run (with containers)
 
 build the images:
+~~~
 docker build -t wasa-photos-backend:latest -f Dockerfile.backend .
 docker build -t wasa-photos-frontend:latest -f Dockerfile.frontend .
+~~~
 
 run the container images:
+~~~
 docker run -it --rm -p 3000:3000 wasa-photos-backend:latest
 docker run -it --rm -p 8081:80 wasa-photos-frontend:latest
+~~~
