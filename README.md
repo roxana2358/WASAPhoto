@@ -1,4 +1,4 @@
-### WASAPhoto
+# WASAPhoto
 
 Keep in touch with your friends by sharing photos of special moments, thanks to WASAPhoto! You can
 upload your photos directly from your PC, and they will be visible to everyone following you.
@@ -48,3 +48,10 @@ run the container images:
 docker run -it --rm -p 3000:3000 wasa-photos-backend:latest
 docker run -it --rm -p 8081:80 wasa-photos-frontend:latest
 ~~~
+
+##
+Corso di studi in Informatica
+
+Programmazione per il Web
+
+Febbraio 2023
